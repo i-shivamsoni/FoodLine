@@ -65,16 +65,12 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/textInputLayout"
-                    style="@style/LoginTextInputLayoutStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    style="@style/LoginTextInputLayoutStyle">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/email_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        style="@style/LoginTextInputEditText"
                         android:drawableEnd="@drawable/ic_email"
-                        android:drawableTint="@color/app_back"
                         android:hint="@string/email_id"
                         android:inputType="textEmailAddress" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -82,16 +78,12 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/textInputLayout2"
                     style="@style/LoginTextInputLayoutStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:layout_marginTop="20dp">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/name_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        style="@style/LoginTextInputEditText"
                         android:drawableEnd="@drawable/ic_name"
-                        android:drawableTint="@color/app_back"
                         android:hint="@string/name"
                         android:inputType="text" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -99,16 +91,13 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/textInputLayout3"
                     style="@style/LoginTextInputLayoutStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     app:passwordToggleEnabled="true"
                     app:passwordToggleTint="@color/app_back">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/pass_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        style="@style/LoginTextInputEditText"
                         android:hint="@string/password"
                         android:inputType="textPassword" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -116,16 +105,13 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/textInputLayout4"
                     style="@style/LoginTextInputLayoutStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     app:passwordToggleEnabled="true"
                     app:passwordToggleTint="@color/app_back">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/confirm_pass_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        style="@style/LoginTextInputEditText"
                         android:hint="@string/confirm_password"
                         android:inputType="textPassword" />
                 </com.google.android.material.textfield.TextInputLayout>
