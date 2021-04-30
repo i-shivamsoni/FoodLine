@@ -15,7 +15,15 @@
     </style>
 
     <style name="LoginTextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="boxStrokeColor">#ff7171</item>
         <item name="boxStrokeWidth">2dp</item>
+    </style>
+
+    <style name="LoginTextInputEditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:drawableTint">@color/app_back</item>
     </style>
 </resources>
