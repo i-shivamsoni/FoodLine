@@ -11,6 +11,7 @@
     <color name="transparent">#00000000</color>
 
     <color name="app_back">#FF7171</color>
+    <color name="app_back_tint">#FDD5D5</color>
     <color name="app_back_dark">#c73f46</color>
     <color name="app_back_light">#ffa39f</color>
 
@@ -21,4 +22,5 @@
     <color name="gray">#838383</color>
 
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/gray</color>
+    <color name="app_back_tint_light">#FBEFEF</color>
 </resources>

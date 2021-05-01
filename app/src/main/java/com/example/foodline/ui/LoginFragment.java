@@ -1,5 +1,6 @@
 package com.example.foodline.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -52,7 +53,10 @@ public class LoginFragment extends Fragment {
         // Use binding.emailText.getText.toString to get string stored in that view and similarly for other :)
 
         if(isAuthenticated){
-            navController.navigate(LoginFragmentDirections.actionLoginFragmentToMenuFragment());
+            Intent i = new Intent(getActivity(), BaseActivity.class);
+            startActivity(i);
+            getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            getActivity().finish();
         }
     }
 }
