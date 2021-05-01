@@ -48,7 +48,7 @@
             android:layout_marginBottom="4dp"
             android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/guideline3"
-            app:layout_constraintEnd_toStartOf="@+id/add_icon"
+            app:layout_constraintEnd_toStartOf="@+id/add_icon_btn"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
             tools:text="Pizza" />
 
@@ -64,17 +64,18 @@
             tools:text="300" />
 
         <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/add_icon"
+            android:id="@+id/add_icon_btn"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:background="@drawable/ic_add_lottie_back"
             android:padding="10dp"
+            android:clickable="true"
+            android:focusable="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:lottie_autoPlay="false"
             app:lottie_rawRes="@raw/ic_add_lottie" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
