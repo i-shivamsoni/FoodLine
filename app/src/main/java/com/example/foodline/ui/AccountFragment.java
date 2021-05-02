@@ -1,5 +1,6 @@
 package com.example.foodline.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,8 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.foodline.R;
+import com.example.foodline.databinding.FragmentAccountBinding;
+import com.example.foodline.utils.SharedPreferenceUtil;
 
 public class AccountFragment extends Fragment {
+
+    private FragmentAccountBinding binding;
+    private SharedPreferenceUtil sharedPreferenceUtil;
 
     public AccountFragment() {
     }
@@ -20,13 +26,23 @@ public class AccountFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_account, container, false);
+        binding = FragmentAccountBinding.inflate(inflater);
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ((BaseActivity) requireActivity()).setAppBar(2);
+
+        sharedPreferenceUtil = SharedPreferenceUtil.getInstance(requireContext());
+
+        binding.logoutBtn.setOnClickListener(v -> {
+            sharedPreferenceUtil.setIsLogin(false);
+            Intent i = new Intent(requireActivity(), MainActivity.class);
+            startActivity(i);
+            requireActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            requireActivity().finish();
+        });
     }
 }

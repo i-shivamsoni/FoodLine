@@ -6,22 +6,29 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.example.foodline.R;
 import com.example.foodline.databinding.FragmentLoginBinding;
+import com.example.foodline.utils.SharedPreferenceUtil;
+import com.example.foodline.viewmodel.LoginViewModel;
 
 public class LoginFragment extends Fragment {
 
     private FragmentLoginBinding binding;
     private NavController navController;
-    private boolean isAuthenticated = true;
+
+    private LoginViewModel loginViewModel;
+    private SharedPreferenceUtil sharedPreferenceUtil;
 
     public LoginFragment() {}
 
@@ -37,7 +44,14 @@ public class LoginFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         navController = NavHostFragment.findNavController(this);
+        loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+        sharedPreferenceUtil = SharedPreferenceUtil.getInstance(requireContext());
 
+        setListeners();
+        observeData();
+    }
+
+    private void setListeners() {
         binding.loginBtn.setOnClickListener(v -> {
             authenticateUser();
         });
@@ -47,16 +61,68 @@ public class LoginFragment extends Fragment {
         });
     }
 
-    private void authenticateUser() {
-        // Write authentication code and store the boolean value in isAuthenticated
-        // Use binding.emailText for email and use binding.passText for pass
-        // Use binding.emailText.getText.toString to get string stored in that view and similarly for other :)
+    private void observeData() {
+        loginViewModel.getIsAuthenticated().observe(getViewLifecycleOwner(), check -> {
+            if(check!=null){
+                binding.loadingView.setVisibility(View.GONE);
+                requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
-        if(isAuthenticated){
-            Intent i = new Intent(getActivity(), BaseActivity.class);
-            startActivity(i);
-            getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            getActivity().finish();
+                loginViewModel.getIsAuthenticated().setValue(null);
+
+                if(check){
+                    Toast.makeText(requireContext(), "Login Successful :)", Toast.LENGTH_SHORT).show();
+                    sharedPreferenceUtil.setIsLogin(true);
+                    Intent i = new Intent(requireActivity(), BaseActivity.class);
+                    startActivity(i);
+                    requireActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    requireActivity().finish();
+                }else{
+                    Toast.makeText(requireContext(), "Please, check your email and password and try again!!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void authenticateUser() {
+        if(!isValidated())
+            return;
+
+        binding.loadingView.setVisibility(View.VISIBLE);
+        requireActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+        loginViewModel.getEmail().setValue(binding.emailText.getText().toString().trim());
+        loginViewModel.getPassword().setValue(binding.passText.getText().toString().trim());
+
+        loginViewModel.authenticateUser();
+    }
+
+    private boolean isValidated() {
+        boolean isEmailValid, isPasswordValid;
+
+        if (binding.emailText.getText().toString().isEmpty()) {
+            Toast.makeText(requireContext(), "Invalid Email!!", Toast.LENGTH_SHORT).show();
+            isEmailValid = false;
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(binding.emailText.getText().toString()).matches()) {
+            Toast.makeText(requireContext(), "Invalid Email!!", Toast.LENGTH_SHORT).show();
+            isEmailValid = false;
+        } else  {
+            isEmailValid = true;
+        }
+
+        if (binding.passText.getText().toString().isEmpty()) {
+            Toast.makeText(requireContext(), "Invalid Password!!", Toast.LENGTH_SHORT).show();
+            isPasswordValid = false;
+        } else if (binding.passText.getText().length() < 6) {
+            Toast.makeText(requireContext(), "Invalid Password!!", Toast.LENGTH_SHORT).show();
+            isPasswordValid = false;
+        } else  {
+            isPasswordValid = true;
+        }
+
+        if (isEmailValid && isPasswordValid) {
+            return true;
+        }else {
+            return false;
         }
     }
 }
