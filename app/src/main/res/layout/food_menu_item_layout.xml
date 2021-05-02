@@ -9,9 +9,18 @@
             type="com.example.foodline.model.MenuItem" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="100dp"
+        android:layout_margin="4dp"
+        android:clickable="true"
+        android:focusable="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/menu_item_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="10dp"
         android:clickable="true"
         android:focusable="true"
         android:background="@drawable/ripple_effect_recycler_view">
@@ -21,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.2" />
+            app:layout_constraintGuide_percent="0.25" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline3"
@@ -33,7 +42,7 @@
         <ImageView
             android:id="@+id/menu_item_image"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:scaleType="centerCrop"
             tools:src="@drawable/ic_logo"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -42,14 +51,14 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/menu_item_name"
+            android:id="@+id/menu_item_name_and_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
             android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/guideline3"
-            app:layout_constraintEnd_toStartOf="@+id/add_icon_btn"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             tools:text="Pizza" />
 
         <TextView
@@ -58,8 +67,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="@+id/menu_item_name"
-            app:layout_constraintStart_toStartOf="@+id/menu_item_name"
+            app:layout_constraintEnd_toEndOf="@+id/menu_item_name_and_price"
+            app:layout_constraintStart_toStartOf="@+id/menu_item_name_and_price"
             app:layout_constraintTop_toTopOf="@+id/guideline3"
             tools:text="300" />
 
@@ -78,4 +87,5 @@
             app:lottie_rawRes="@raw/ic_add_lottie" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
 </layout>
