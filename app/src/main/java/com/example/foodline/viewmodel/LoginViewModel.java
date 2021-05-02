@@ -1,7 +1,9 @@
 package com.example.foodline.viewmodel;
 
+import android.app.Application;
+
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.example.foodline.model.DefaultResponse;
 import com.example.foodline.repository.FoodRepository;
@@ -10,7 +12,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginViewModel extends ViewModel {
+public class LoginViewModel extends AndroidViewModel {
 
     private FoodRepository foodRepository;
     private MutableLiveData<String> email = new MutableLiveData<>();
@@ -18,8 +20,9 @@ public class LoginViewModel extends ViewModel {
 
     private MutableLiveData<Boolean> isAuthenticated = new MutableLiveData<>();
 
-    public LoginViewModel(){
-        this.foodRepository = new FoodRepository();
+    public LoginViewModel(Application application){
+        super(application);
+        this.foodRepository = FoodRepository.getInstance(application);
     }
 
     public MutableLiveData<String> getEmail() {

@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ import com.example.foodline.R;
 import com.example.foodline.databinding.FragmentMenuBinding;
 import com.example.foodline.databinding.MenuItemBottomSheetLayoutBinding;
 import com.example.foodline.model.MenuItem;
+import com.example.foodline.viewmodel.MenuViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
@@ -36,6 +38,7 @@ public class MenuFragment extends Fragment {
     private List<MenuItem> menuItems = new ArrayList<MenuItem>();
 
     private BottomSheetDialog bottomSheetDialog;
+    private MenuViewModel menuViewModel;
 
     public MenuFragment() { }
 
@@ -51,50 +54,12 @@ public class MenuFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ((BaseActivity) requireActivity()).setAppBar(0);
 
-        menuItems.add(new MenuItem("Pizza", "Fast Food", "200",""));
-        menuItems.add(new MenuItem("Burger", "Fast Food", "50",""));
-        menuItems.add(new MenuItem("Coffee", "Fast Food", "20",""));
-        menuItems.add(new MenuItem("Tea", "Fast Food", "20",""));
-        menuItems.add(new MenuItem("Samosa", "Fast Food", "20",""));
-        menuItems.add(new MenuItem("Hot Dog", "Fast Food", "90",""));
-        menuItems.add(new MenuItem("Thali", "Fast Food", "70",""));
-        menuItems.add(new MenuItem("Dhosa", "Fast Food", "70",""));
-        menuItems.add(new MenuItem("Pav Bhaji", "Fast Food", "60",""));
-        menuItems.add(new MenuItem("Sprite", "Fast Food", "30",""));
-        menuItems.add(new MenuItem("Frooti", "Fast Food", "30",""));
-        menuItems.add(new MenuItem("Maaza", "Fast Food", "30",""));
-        menuItems.add(new MenuItem("Pasta", "Fast Food", "40",""));
-        menuItems.add(new MenuItem("Maggi", "Fast Food", "40",""));
-        menuItems.add(new MenuItem("Chowmein", "Fast Food", "40",""));
-        menuItems.add(new MenuItem("Manchurian", "Fast Food", "40",""));
-        menuItems.add(new MenuItem("Paneer", "Fast Food", "40",""));
-        menuItems.add(new MenuItem("Chicken Tikka", "Fast Food", "80",""));
-        menuItems.add(new MenuItem("Veg Roll", "Fast Food", "50",""));
+        menuViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(requireActivity().getApplication())).get(MenuViewModel.class);
 
-        adapter = new MenuItemAdapter(menuItems, new MenuItemAdapter.MyAdapterListener() {
+        adapter = new MenuItemAdapter(new MenuItemAdapter.MyAdapterListener() {
             @Override
             public void onAddBtnClicked(View view, int position) {
-                LottieAnimationView toggle = (LottieAnimationView) view;
-                MenuItem menuItem = menuItems.get(position);
-                if (menuItem.getCounterInCart() == 0) {
-                    toggle.setSpeed(3f);
-                    toggle.playAnimation();
-                    Drawable[] drawables = {ContextCompat.getDrawable(requireContext(), R.drawable.ic_add_lottie_back),ContextCompat.getDrawable(requireContext(), R.drawable.ic_add_lottie_selected_back)};
-                    TransitionDrawable transitionDrawable = new TransitionDrawable(drawables);
-                    toggle.setBackground(transitionDrawable);
-                    transitionDrawable.startTransition(400);
-                    menuItem.setCounterInCart(1);
-                    Toast.makeText(requireContext(), "Added to Cart", Toast.LENGTH_SHORT).show();
-                } else {
-                    toggle.setSpeed(-3f);
-                    toggle.playAnimation();
-                    Drawable[] drawables = {ContextCompat.getDrawable(requireContext(), R.drawable.ic_add_lottie_selected_back),ContextCompat.getDrawable(requireContext(), R.drawable.ic_add_lottie_back)};
-                    TransitionDrawable transitionDrawable = new TransitionDrawable(drawables);
-                    toggle.setBackground(transitionDrawable);
-                    transitionDrawable.startTransition(400);
-                    menuItem.setCounterInCart(0);
-                    Toast.makeText(requireContext(), "Removed from Cart", Toast.LENGTH_SHORT).show();
-                }
+                changeState((LottieAnimationView) view, position);
             }
 
             @Override
@@ -105,7 +70,41 @@ public class MenuFragment extends Fragment {
         });
 
         binding.menuItemList.setAdapter(adapter);
+        observeData();
+    }
 
+    private void observeData() {
+        menuViewModel.getMenuItems().observe(getViewLifecycleOwner(), listData -> {
+            if(listData != null){
+                menuItems = listData;
+                adapter.submitList(listData);
+            }
+        });
+    }
+
+    private void changeState(LottieAnimationView toggle, int position) {
+        MenuItem menuItem = menuItems.get(position);
+        if (menuItem.getCounterInCart() == 0) {
+            toggle.setSpeed(3f);
+            toggle.playAnimation();
+            Drawable[] drawables = {ContextCompat.getDrawable(requireContext(), R.drawable.ic_add_lottie_back),ContextCompat.getDrawable(requireContext(), R.drawable.ic_add_lottie_selected_back)};
+            TransitionDrawable transitionDrawable = new TransitionDrawable(drawables);
+            toggle.setBackground(transitionDrawable);
+            transitionDrawable.startTransition(400);
+            menuItem.setCounterInCart(1);
+            menuViewModel.update(menuItem);
+            Toast.makeText(requireContext(), "Added to Cart :)", Toast.LENGTH_SHORT).show();
+        } else {
+            toggle.setSpeed(-3f);
+            toggle.playAnimation();
+            Drawable[] drawables = {ContextCompat.getDrawable(requireContext(), R.drawable.ic_add_lottie_selected_back),ContextCompat.getDrawable(requireContext(), R.drawable.ic_add_lottie_back)};
+            TransitionDrawable transitionDrawable = new TransitionDrawable(drawables);
+            toggle.setBackground(transitionDrawable);
+            transitionDrawable.startTransition(400);
+            menuItem.setCounterInCart(0);
+            menuViewModel.update(menuItem);
+            Toast.makeText(requireContext(), "Removed from Cart :(", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void showBottomSheetDialog(MenuItem menuItem) {
@@ -117,8 +116,9 @@ public class MenuFragment extends Fragment {
 
         bottomSheetLayoutBinding.menuItemAddBtn.setOnClickListener(v ->{
             menuItem.setCounterInCart(1);
+            menuViewModel.update(menuItem);
             adapter.notifyDataSetChanged();
-            Toast.makeText(requireContext(), "Added to Cart", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Added to Cart :)", Toast.LENGTH_SHORT).show();
             bottomSheetDialog.dismiss();
         });
 
@@ -133,4 +133,5 @@ public class MenuFragment extends Fragment {
             bottomSheetDialog.dismiss();
         }
     }
+
 }

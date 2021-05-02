@@ -12,16 +12,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
 import com.example.foodline.R;
 import com.example.foodline.model.MenuItem;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.CartItemViewHolder> {
 
-    List<MenuItem> cartItems = new ArrayList<MenuItem>();
+    private List<MenuItem> cartItems;
+    private CartItemListener cartItemListener;
 
-    public CartItemAdapter(List<MenuItem> listData){
-        this.cartItems = listData;
+    public CartItemAdapter(CartItemListener cartItemListener){
+        this.cartItems = new ArrayList<MenuItem>();
+        this.cartItemListener = cartItemListener;
     }
 
     @NonNull
@@ -40,10 +41,16 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.CartIt
         return cartItems.size();
     }
 
+    public void submitList(List<MenuItem> cartList) {
+        cartItems = cartList;
+        notifyDataSetChanged();
+    }
+
     class CartItemViewHolder extends RecyclerView.ViewHolder{
 
         private TextView cartItemName;
         private TextView cartItemPrice;
+        private TextView grandTotalText;
         private ElegantNumberButton addRemoveBtn;
 
         public CartItemViewHolder(@NonNull View itemView) {
@@ -56,7 +63,12 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.CartIt
         public void bind(MenuItem menuItem) {
             cartItemName.setText(menuItem.getName());
             cartItemPrice.setText(String.format("Rs. %s", menuItem.getPrice()));
-            addRemoveBtn.setOnClickListener((ElegantNumberButton.OnClickListener) v -> Log.d("tzuyu", ((ElegantNumberButton)v).getNumber()));
+            addRemoveBtn.setNumber(String.valueOf(menuItem.getCounterInCart()));
+            addRemoveBtn.setOnClickListener((ElegantNumberButton.OnClickListener) v -> cartItemListener.onClick((ElegantNumberButton)v, menuItem));
         }
+    }
+
+    public interface CartItemListener{
+        void onClick(ElegantNumberButton view, MenuItem menuItem);
     }
 }

@@ -44,7 +44,7 @@ public class LoginFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         navController = NavHostFragment.findNavController(this);
-        loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+        loginViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(requireActivity().getApplication())).get(LoginViewModel.class);
         sharedPreferenceUtil = SharedPreferenceUtil.getInstance(requireContext());
 
         setListeners();
@@ -79,6 +79,7 @@ public class LoginFragment extends Fragment {
                 }else{
                     Toast.makeText(requireContext(), "Please, check your email and password and try again!!", Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
     }
