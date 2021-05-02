@@ -1,7 +1,10 @@
 package com.example.foodline.viewmodel;
 
+import android.app.Application;
+import android.widget.Toast;
+
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.example.foodline.model.DefaultResponse;
 import com.example.foodline.repository.FoodRepository;
@@ -10,7 +13,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class RegisterViewModel extends ViewModel {
+public class RegisterViewModel extends AndroidViewModel {
 
     private FoodRepository foodRepository;
     private MutableLiveData<String> name = new MutableLiveData<>();
@@ -19,8 +22,9 @@ public class RegisterViewModel extends ViewModel {
 
     private MutableLiveData<Boolean> isRegistered = new MutableLiveData<>();
 
-    public RegisterViewModel(){
-        this.foodRepository = new FoodRepository();
+    public RegisterViewModel(Application application){
+        super(application);
+        this.foodRepository = FoodRepository.getInstance(application);
     }
 
     public void registerUser(){
@@ -29,7 +33,12 @@ public class RegisterViewModel extends ViewModel {
         call.enqueue(new Callback<DefaultResponse>() {
             @Override
             public void onResponse(Call<DefaultResponse> call, Response<DefaultResponse> response) {
-                isRegistered.setValue(true);
+                if(response.code() == 200) {
+                    isRegistered.setValue(true);
+                }else if(response.code() == 400){
+                    isRegistered.setValue(false);
+                    Toast.makeText(getApplication(), "You are already registered :)", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override

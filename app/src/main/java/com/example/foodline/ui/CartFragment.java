@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,16 +13,15 @@ import android.view.ViewGroup;
 
 import com.example.foodline.databinding.FragmentCartBinding;
 import com.example.foodline.model.MenuItem;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.example.foodline.viewmodel.CartViewModel;
 
 public class CartFragment extends Fragment {
 
     private FragmentCartBinding binding;
 
     private CartItemAdapter adapter;
-    private List<MenuItem> cartItems = new ArrayList<MenuItem>();
+    private CartViewModel cartViewModel;
+    private int grandTotal = 0;
 
     public CartFragment() { }
 
@@ -37,13 +37,47 @@ public class CartFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ((BaseActivity) requireActivity()).setAppBar(1);
 
-        cartItems.add(new MenuItem("Pizza", "Fast Food", "200",""));
-        cartItems.add(new MenuItem("Burger", "Fast Food", "50",""));
+        cartViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(requireActivity().getApplication())).get(CartViewModel.class);
 
-        adapter = new CartItemAdapter(cartItems);
+        adapter = new CartItemAdapter((button, cartItem) -> {
+            for(MenuItem menuItem: cartViewModel.getMenuItems().getValue()){
+                if(menuItem.getId() == cartItem.getId()){
+                    menuItem.setCounterInCart(Integer.parseInt(button.getNumber()));
+                    cartViewModel.update(menuItem);
+                }
+            }
+            adapter.notifyDataSetChanged();
+        });
 
         binding.cartItemList.setAdapter(adapter);
 
-
+        observerData();
     }
+
+    private void observerData() {
+        cartViewModel.getCartItems().observe(getViewLifecycleOwner(), cartList -> {
+            if(cartList != null){
+                adapter.submitList(cartList);
+                if(cartList.size() == 0){
+                    binding.emptyCartText.setVisibility(View.VISIBLE);
+                    binding.cartItemList.setVisibility(View.GONE);
+                    binding.payBtn.setVisibility(View.GONE);
+                    binding.grandTotalLayout.setVisibility(View.GONE);
+                    binding.orderingForLayout.setVisibility(View.GONE);
+                }else{
+                    binding.emptyCartText.setVisibility(View.GONE);
+                    binding.cartItemList.setVisibility(View.VISIBLE);
+                    binding.payBtn.setVisibility(View.VISIBLE);
+                    binding.grandTotalLayout.setVisibility(View.VISIBLE);
+                    binding.orderingForLayout.setVisibility(View.VISIBLE);
+                    grandTotal = 0;
+                    for(MenuItem cartItem: cartList){
+                        grandTotal += (Integer.parseInt(cartItem.getPrice())*cartItem.getCounterInCart());
+                    }
+                    binding.grandTotalText.setText(String.format("Rs. %d", grandTotal));
+                }
+            }
+        });
+    }
+
 }

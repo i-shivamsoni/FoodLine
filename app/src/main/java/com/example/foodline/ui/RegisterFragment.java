@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.util.Patterns;
@@ -16,7 +15,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import com.example.foodline.R;
 import com.example.foodline.databinding.FragmentRegisterBinding;
 import com.example.foodline.viewmodel.RegisterViewModel;
 
@@ -39,7 +37,7 @@ public class RegisterFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        registerViewModel = new ViewModelProvider(this).get(RegisterViewModel.class);
+        registerViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(requireActivity().getApplication())).get(RegisterViewModel.class);
 
         setListeners();
         observeData();

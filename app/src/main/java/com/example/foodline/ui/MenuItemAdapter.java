@@ -16,6 +16,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.example.foodline.R;
 import com.example.foodline.model.MenuItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.MenuItemViewHolder> {
@@ -24,8 +25,8 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.MenuIt
     MyAdapterListener listener;
     Context context;
 
-    public MenuItemAdapter(List<MenuItem> listData, MyAdapterListener listener){
-        this.menuItems = listData;
+    public MenuItemAdapter(MyAdapterListener listener){
+        this.menuItems = new ArrayList<MenuItem>();
         this.listener = listener;
     }
 
@@ -48,7 +49,7 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.MenuIt
     }
 
     public void submitList(List<MenuItem> listData){
-        menuItems.addAll(listData);
+        menuItems = listData;
         notifyDataSetChanged();
     }
 
