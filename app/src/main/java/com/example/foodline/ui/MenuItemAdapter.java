@@ -1,16 +1,15 @@
 package com.example.foodline.ui;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,7 +17,6 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.example.foodline.R;
 import com.example.foodline.model.MenuItem;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.MenuItemViewHolder> {
@@ -47,7 +45,6 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.MenuIt
 
     @Override
     public int getItemCount() {
-        Log.d("tzuyu",String.valueOf(menuItems.size()));
         return menuItems.size();
     }
 
@@ -59,6 +56,7 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.MenuIt
 
     class MenuItemViewHolder extends RecyclerView.ViewHolder{
 
+        private ConstraintLayout menuItemLayout;
         private ImageView menuItemImage;
         private TextView menuItemName;
         private TextView menuItemPrice;
@@ -66,10 +64,11 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.MenuIt
 
         public MenuItemViewHolder(@NonNull View itemView) {
             super(itemView);
-            menuItemImage = itemView.findViewById(R.id.menu_item_image);
-            menuItemName = itemView.findViewById(R.id.menu_item_name);
-            menuItemPrice = itemView.findViewById(R.id.menu_item_price);
-            addIconBtn = itemView.findViewById(R.id.add_icon_btn);
+            this.menuItemLayout = itemView.findViewById(R.id.menu_item_layout);
+            this.menuItemImage = itemView.findViewById(R.id.menu_item_image);
+            this.menuItemName = itemView.findViewById(R.id.menu_item_name_and_price);
+            this.menuItemPrice = itemView.findViewById(R.id.menu_item_price);
+            this.addIconBtn = itemView.findViewById(R.id.add_icon_btn);
         }
 
         private void bindView(MenuItem menuItem){
@@ -86,6 +85,7 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.MenuIt
                 addIconBtn.setBackground(ContextCompat.getDrawable(context, R.drawable.ic_add_lottie_selected_back));
             }
 
+            menuItemLayout.setOnClickListener(v -> listener.onMenuItemClicked(v, getAdapterPosition()));
             addIconBtn.setOnClickListener(v -> listener.onAddBtnClicked(v, getAdapterPosition()));
         }
 

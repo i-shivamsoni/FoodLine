@@ -17,14 +17,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.foodline.R;
 import com.example.foodline.databinding.FragmentMenuBinding;
+import com.example.foodline.databinding.MenuItemBottomSheetLayoutBinding;
 import com.example.foodline.model.MenuItem;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.security.auth.callback.Callback;
 
 public class MenuFragment extends Fragment {
 
@@ -34,6 +39,8 @@ public class MenuFragment extends Fragment {
 
     private MenuItemAdapter adapter;
     private List<MenuItem> menuItems = new ArrayList<MenuItem>();
+
+    private BottomSheetDialog bottomSheetDialog;
 
     public MenuFragment() { }
 
@@ -74,39 +81,59 @@ public class MenuFragment extends Fragment {
             public void onAddBtnClicked(View view, int position) {
                 LottieAnimationView toggle = (LottieAnimationView) view;
                 MenuItem menuItem = menuItems.get(position);
-
-                Log.d("tzuyu",menuItem.toString() +" " + toggle.toString());
-
                 if (menuItem.getInCart() == 0) {
                     toggle.setSpeed(3f);
                     toggle.playAnimation();
-                    Drawable[] drawables = {ContextCompat.getDrawable(getContext(), R.drawable.ic_add_lottie_back),ContextCompat.getDrawable(getContext(), R.drawable.ic_add_lottie_selected_back)};
+                    Drawable[] drawables = {ContextCompat.getDrawable(requireContext(), R.drawable.ic_add_lottie_back),ContextCompat.getDrawable(requireContext(), R.drawable.ic_add_lottie_selected_back)};
                     TransitionDrawable transitionDrawable = new TransitionDrawable(drawables);
                     toggle.setBackground(transitionDrawable);
                     transitionDrawable.startTransition(400);
                     menuItem.setInCart(1);
+                    Toast.makeText(requireContext(), "Added to Cart", Toast.LENGTH_SHORT).show();
                 } else {
                     toggle.setSpeed(-3f);
                     toggle.playAnimation();
-                    Drawable[] drawables = {ContextCompat.getDrawable(getContext(), R.drawable.ic_add_lottie_selected_back),ContextCompat.getDrawable(getContext(), R.drawable.ic_add_lottie_back)};
+                    Drawable[] drawables = {ContextCompat.getDrawable(requireContext(), R.drawable.ic_add_lottie_selected_back),ContextCompat.getDrawable(requireContext(), R.drawable.ic_add_lottie_back)};
                     TransitionDrawable transitionDrawable = new TransitionDrawable(drawables);
                     toggle.setBackground(transitionDrawable);
                     transitionDrawable.startTransition(400);
                     menuItem.setInCart(0);
+                    Toast.makeText(requireContext(), "Removed from Cart", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onMenuItemClicked(View view, int position) {
-
+                MenuItem menuItem = menuItems.get(position);
+                showBottomSheetDialog(menuItem);
             }
         });
 
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(binding.menuItemList.getContext(), ((LinearLayoutManager)binding.menuItemList.getLayoutManager()).getOrientation());
-        binding.menuItemList.addItemDecoration(dividerItemDecoration);
-
         binding.menuItemList.setAdapter(adapter);
 
+    }
 
+    private void showBottomSheetDialog(MenuItem menuItem) {
+        bottomSheetDialog = new BottomSheetDialog(requireContext());
+        MenuItemBottomSheetLayoutBinding bottomSheetLayoutBinding = MenuItemBottomSheetLayoutBinding.inflate(getLayoutInflater());
+
+        bottomSheetLayoutBinding.menuItemNameAndPrice.setText(String.format("%s : %s", menuItem.getName(), menuItem.getPrice()));
+        bottomSheetLayoutBinding.menuItemCategory.setText(menuItem.getCategory());
+
+        bottomSheetLayoutBinding.menuItemAddBtn.setOnClickListener(v ->{
+            menuItem.setInCart(1);
+            adapter.notifyDataSetChanged();
+            Toast.makeText(requireContext(), "Added to Cart", Toast.LENGTH_SHORT).show();
+            bottomSheetDialog.dismiss();
+        });
+
+        bottomSheetDialog.setContentView(bottomSheetLayoutBinding.getRoot());
+        bottomSheetDialog.show();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        bottomSheetDialog.dismiss();
     }
 }
