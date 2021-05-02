@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -76,7 +75,7 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.MenuIt
             menuItemName.setText(menuItem.getName());
             menuItemPrice.setText(menuItem.getPrice());
 
-            if(menuItem.getInCart() == 0){
+            if(menuItem.getCounterInCart() == 0){
                 addIconBtn.cancelAnimation();
                 addIconBtn.setProgress(0f);
                 addIconBtn.setBackground(ContextCompat.getDrawable(context, R.drawable.ic_add_lottie_back));

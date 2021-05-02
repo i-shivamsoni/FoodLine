@@ -5,6 +5,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
@@ -12,6 +13,7 @@ import android.view.animation.AnimationUtils;
 
 import com.example.foodline.R;
 import com.example.foodline.databinding.ActivityMainBinding;
+import com.example.foodline.utils.SharedPreferenceUtil;
 
 import np.com.susanthapa.curved_bottom_navigation.CbnMenuItem;
 
@@ -27,14 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
         navController = Navigation.findNavController(this, R.id.nav_host_fragment_login);
 
-        boolean isAuthenticated = false;
 
-        if(isAuthenticated){
-
-
-        }else{
-
-        }
     }
 
 }

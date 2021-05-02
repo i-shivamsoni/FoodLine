@@ -8,10 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,8 +25,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.security.auth.callback.Callback;
 
 public class MenuFragment extends Fragment {
 
@@ -56,39 +51,39 @@ public class MenuFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ((BaseActivity) requireActivity()).setAppBar(0);
 
-        menuItems.add(new MenuItem("Pizza", "Fast Food", "200","", 0));
-        menuItems.add(new MenuItem("Burger", "Fast Food", "50","", 0));
-        menuItems.add(new MenuItem("Coffee", "Fast Food", "20","", 0));
-        menuItems.add(new MenuItem("Tea", "Fast Food", "20","", 0));
-        menuItems.add(new MenuItem("Samosa", "Fast Food", "20","", 0));
-        menuItems.add(new MenuItem("Hot Dog", "Fast Food", "90","", 0));
-        menuItems.add(new MenuItem("Thali", "Fast Food", "70","", 0));
-        menuItems.add(new MenuItem("Dhosa", "Fast Food", "70","", 0));
-        menuItems.add(new MenuItem("Pav Bhaji", "Fast Food", "60","", 0));
-        menuItems.add(new MenuItem("Sprite", "Fast Food", "30","", 0));
-        menuItems.add(new MenuItem("Frooti", "Fast Food", "30","", 0));
-        menuItems.add(new MenuItem("Maaza", "Fast Food", "30","", 0));
-        menuItems.add(new MenuItem("Pasta", "Fast Food", "40","", 0));
-        menuItems.add(new MenuItem("Maggi", "Fast Food", "40","", 0));
-        menuItems.add(new MenuItem("Chowmein", "Fast Food", "40","", 0));
-        menuItems.add(new MenuItem("Manchurian", "Fast Food", "40","", 0));
-        menuItems.add(new MenuItem("Paneer", "Fast Food", "40","", 0));
-        menuItems.add(new MenuItem("Chicken Tikka", "Fast Food", "80","", 0));
-        menuItems.add(new MenuItem("Veg Roll", "Fast Food", "50","", 0));
+        menuItems.add(new MenuItem("Pizza", "Fast Food", "200",""));
+        menuItems.add(new MenuItem("Burger", "Fast Food", "50",""));
+        menuItems.add(new MenuItem("Coffee", "Fast Food", "20",""));
+        menuItems.add(new MenuItem("Tea", "Fast Food", "20",""));
+        menuItems.add(new MenuItem("Samosa", "Fast Food", "20",""));
+        menuItems.add(new MenuItem("Hot Dog", "Fast Food", "90",""));
+        menuItems.add(new MenuItem("Thali", "Fast Food", "70",""));
+        menuItems.add(new MenuItem("Dhosa", "Fast Food", "70",""));
+        menuItems.add(new MenuItem("Pav Bhaji", "Fast Food", "60",""));
+        menuItems.add(new MenuItem("Sprite", "Fast Food", "30",""));
+        menuItems.add(new MenuItem("Frooti", "Fast Food", "30",""));
+        menuItems.add(new MenuItem("Maaza", "Fast Food", "30",""));
+        menuItems.add(new MenuItem("Pasta", "Fast Food", "40",""));
+        menuItems.add(new MenuItem("Maggi", "Fast Food", "40",""));
+        menuItems.add(new MenuItem("Chowmein", "Fast Food", "40",""));
+        menuItems.add(new MenuItem("Manchurian", "Fast Food", "40",""));
+        menuItems.add(new MenuItem("Paneer", "Fast Food", "40",""));
+        menuItems.add(new MenuItem("Chicken Tikka", "Fast Food", "80",""));
+        menuItems.add(new MenuItem("Veg Roll", "Fast Food", "50",""));
 
         adapter = new MenuItemAdapter(menuItems, new MenuItemAdapter.MyAdapterListener() {
             @Override
             public void onAddBtnClicked(View view, int position) {
                 LottieAnimationView toggle = (LottieAnimationView) view;
                 MenuItem menuItem = menuItems.get(position);
-                if (menuItem.getInCart() == 0) {
+                if (menuItem.getCounterInCart() == 0) {
                     toggle.setSpeed(3f);
                     toggle.playAnimation();
                     Drawable[] drawables = {ContextCompat.getDrawable(requireContext(), R.drawable.ic_add_lottie_back),ContextCompat.getDrawable(requireContext(), R.drawable.ic_add_lottie_selected_back)};
                     TransitionDrawable transitionDrawable = new TransitionDrawable(drawables);
                     toggle.setBackground(transitionDrawable);
                     transitionDrawable.startTransition(400);
-                    menuItem.setInCart(1);
+                    menuItem.setCounterInCart(1);
                     Toast.makeText(requireContext(), "Added to Cart", Toast.LENGTH_SHORT).show();
                 } else {
                     toggle.setSpeed(-3f);
@@ -97,7 +92,7 @@ public class MenuFragment extends Fragment {
                     TransitionDrawable transitionDrawable = new TransitionDrawable(drawables);
                     toggle.setBackground(transitionDrawable);
                     transitionDrawable.startTransition(400);
-                    menuItem.setInCart(0);
+                    menuItem.setCounterInCart(0);
                     Toast.makeText(requireContext(), "Removed from Cart", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -121,7 +116,7 @@ public class MenuFragment extends Fragment {
         bottomSheetLayoutBinding.menuItemCategory.setText(menuItem.getCategory());
 
         bottomSheetLayoutBinding.menuItemAddBtn.setOnClickListener(v ->{
-            menuItem.setInCart(1);
+            menuItem.setCounterInCart(1);
             adapter.notifyDataSetChanged();
             Toast.makeText(requireContext(), "Added to Cart", Toast.LENGTH_SHORT).show();
             bottomSheetDialog.dismiss();
@@ -134,6 +129,8 @@ public class MenuFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        bottomSheetDialog.dismiss();
+        if(bottomSheetDialog != null) {
+            bottomSheetDialog.dismiss();
+        }
     }
 }

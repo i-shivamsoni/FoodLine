@@ -1,18 +1,21 @@
 package com.example.foodline.model;
 
 public class MenuItem {
+    private int id;
     private String name;
     private String category;
-    private String price;
     private String imageUrl;
-    private int inCart;
+    private String rating;
+    private String price;
+    private int counterInStock;
+    private int counterInCart;
 
-    public MenuItem(String name, String category, String price, String imageUrl, int inCart) {
+    public MenuItem(String name, String category, String price, String imageUrl) {
         this.name = name;
         this.category = category;
         this.price = price;
         this.imageUrl = imageUrl;
-        this.inCart = inCart;
+        this.counterInCart = 0;
     }
 
     public String getName() {
@@ -47,12 +50,12 @@ public class MenuItem {
         this.imageUrl = imageUrl;
     }
 
-    public int getInCart() {
-        return inCart;
+    public int getCounterInCart() {
+        return counterInCart;
     }
 
-    public void setInCart(int inCart) {
-        this.inCart = inCart;
+    public void setCounterInCart(int counterInCart) {
+        this.counterInCart = counterInCart;
     }
 
     @Override
@@ -62,7 +65,7 @@ public class MenuItem {
                 ", category='" + category + '\'' +
                 ", price='" + price + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
-                ", inCart=" + inCart +
+                ", inCart=" + counterInCart +
                 '}';
     }
 }
