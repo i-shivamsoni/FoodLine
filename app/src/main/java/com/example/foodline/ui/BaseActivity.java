@@ -45,7 +45,7 @@ public class BaseActivity extends AppCompatActivity {
     private void showFilterAlertDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this, R.style.MaterialThemeDialog);
 
-        String[] items = {"None", "Bevarages", "Chinese", "Desert"};
+        String[] items = {"None", "Bevarages", "Chinese", "Desert", "Fast Food"};
         int checkedItem = 0;
         alertDialog.setTitle("Filter");
         alertDialog.setSingleChoiceItems(items, checkedItem, (dialog, which) -> {

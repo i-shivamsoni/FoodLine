@@ -108,11 +108,6 @@ public class FoodRepository {
 
             return null;
         }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-        }
     }
 
     private static class UpdateMenuItemsTask extends AsyncTask<MenuItem, Void, Void>{
@@ -131,11 +126,6 @@ public class FoodRepository {
             foodDao.update(menuItem);
 
             return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
         }
     }
 }

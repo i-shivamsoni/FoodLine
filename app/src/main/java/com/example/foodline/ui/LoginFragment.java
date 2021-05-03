@@ -1,5 +1,6 @@
 package com.example.foodline.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -11,14 +12,19 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.util.Patterns;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.foodline.R;
 import com.example.foodline.databinding.FragmentLoginBinding;
+import com.example.foodline.utils.ScreenUtils;
 import com.example.foodline.utils.SharedPreferenceUtil;
 import com.example.foodline.viewmodel.LoginViewModel;
 
@@ -59,27 +65,32 @@ public class LoginFragment extends Fragment {
         binding.registerBtn.setOnClickListener(v -> {
             navController.navigate(LoginFragmentDirections.actionLoginFragmentToRegisterFragment());
         });
+
+        binding.passText.setOnEditorActionListener((v, actionId, event) -> {
+            if(actionId == EditorInfo.IME_ACTION_DONE){
+                ScreenUtils.hideKeyboard(requireActivity());
+                authenticateUser();
+                return true;
+            }
+            return false;
+        });
     }
 
     private void observeData() {
         loginViewModel.getIsAuthenticated().observe(getViewLifecycleOwner(), check -> {
             if(check!=null){
-                binding.loadingView.setVisibility(View.GONE);
-                requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-
-                loginViewModel.getIsAuthenticated().setValue(null);
-
                 if(check){
-                    Toast.makeText(requireContext(), "Login Successful :)", Toast.LENGTH_SHORT).show();
                     sharedPreferenceUtil.setIsLogin(true);
                     Intent i = new Intent(requireActivity(), BaseActivity.class);
                     startActivity(i);
                     requireActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     requireActivity().finish();
-                }else{
-                    Toast.makeText(requireContext(), "Please, check your email and password and try again!!", Toast.LENGTH_SHORT).show();
                 }
 
+                binding.loadingView.setVisibility(View.GONE);
+                requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+                loginViewModel.getIsAuthenticated().setValue(null);
             }
         });
     }
@@ -100,30 +111,33 @@ public class LoginFragment extends Fragment {
     private boolean isValidated() {
         boolean isEmailValid, isPasswordValid;
 
+        if(binding.emailText.getText().toString().isEmpty() && binding.passText.getText().toString().isEmpty()){
+            Toast.makeText(requireContext(), "Email and Password are required!!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
         if (binding.emailText.getText().toString().isEmpty()) {
-            Toast.makeText(requireContext(), "Invalid Email!!", Toast.LENGTH_SHORT).show();
-            isEmailValid = false;
+            Toast.makeText(requireContext(), "Email is required!!", Toast.LENGTH_SHORT).show();
+            return false;
         } else if (!Patterns.EMAIL_ADDRESS.matcher(binding.emailText.getText().toString()).matches()) {
             Toast.makeText(requireContext(), "Invalid Email!!", Toast.LENGTH_SHORT).show();
-            isEmailValid = false;
+            return false;
         } else  {
             isEmailValid = true;
         }
 
         if (binding.passText.getText().toString().isEmpty()) {
-            Toast.makeText(requireContext(), "Invalid Password!!", Toast.LENGTH_SHORT).show();
-            isPasswordValid = false;
+            Toast.makeText(requireContext(), "Password is required!!", Toast.LENGTH_SHORT).show();
+            return false;
         } else if (binding.passText.getText().length() < 6) {
             Toast.makeText(requireContext(), "Invalid Password!!", Toast.LENGTH_SHORT).show();
-            isPasswordValid = false;
+            return false;
         } else  {
             isPasswordValid = true;
         }
 
-        if (isEmailValid && isPasswordValid) {
-            return true;
-        }else {
-            return false;
-        }
+        return isEmailValid && isPasswordValid;
     }
+
+
 }

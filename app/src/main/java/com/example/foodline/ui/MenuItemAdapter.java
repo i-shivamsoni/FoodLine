@@ -72,9 +72,8 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.MenuIt
         }
 
         private void bindView(MenuItem menuItem){
-            menuItemImage.setImageResource(R.drawable.ic_logo);
             menuItemName.setText(menuItem.getName());
-            menuItemPrice.setText(menuItem.getPrice());
+            menuItemPrice.setText(String.format("Rs. %s", menuItem.getPrice()));
 
             if(menuItem.getCounterInCart() == 0){
                 addIconBtn.cancelAnimation();
