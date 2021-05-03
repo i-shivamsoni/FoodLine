@@ -9,10 +9,13 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.util.Patterns;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.foodline.databinding.FragmentRegisterBinding;
@@ -22,7 +25,6 @@ public class RegisterFragment extends Fragment {
 
     private FragmentRegisterBinding binding;
     private RegisterViewModel registerViewModel;
-    private boolean isRegisterSuccessful = false;
 
     public RegisterFragment() { }
 
@@ -46,17 +48,14 @@ public class RegisterFragment extends Fragment {
     private void observeData() {
         registerViewModel.getIsRegistered().observe(getViewLifecycleOwner(), isRegistered -> {
             if(isRegistered != null){
+                if(isRegistered){
+                    navigateToLogin();
+                }
+
                 binding.loadingView.setVisibility(View.GONE);
                 requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
                 registerViewModel.getIsRegistered().setValue(null);
-
-                if(isRegistered){
-                    Toast.makeText(requireContext(), "Registered Successfully :)", Toast.LENGTH_SHORT).show();
-                    navigateToLogin();
-                }else{
-                    Toast.makeText(requireContext(), "Something went wrong :(", Toast.LENGTH_SHORT).show();
-                }
             }
         });
     }
@@ -67,6 +66,13 @@ public class RegisterFragment extends Fragment {
         });
 
         binding.loginBtn.setOnClickListener(v -> navigateToLogin());
+
+        binding.confirmPassText.setOnEditorActionListener((v, actionId, event) -> {
+            if(actionId == EditorInfo.IME_ACTION_DONE){
+                registerUser();
+            }
+            return false;
+        });
     }
 
     private void navigateToLogin(){
@@ -85,38 +91,33 @@ public class RegisterFragment extends Fragment {
         registerViewModel.getPassword().setValue(binding.passText.getText().toString());
 
         registerViewModel.registerUser();
-
-        if(isRegisterSuccessful){
-            Toast.makeText(getContext(), "Registered :)", Toast.LENGTH_SHORT).show();
-            navigateToLogin();
-        }
     }
 
     private boolean isValidated() {
         boolean isEmailValid, isPasswordValid;
 
         if (binding.emailText.getText().toString().isEmpty()) {
-            Toast.makeText(requireContext(), "Invalid Email!!", Toast.LENGTH_SHORT).show();
-            isEmailValid = false;
+            Toast.makeText(requireContext(), "Email is required!!", Toast.LENGTH_SHORT).show();
+            return false;
         } else if (!Patterns.EMAIL_ADDRESS.matcher(binding.emailText.getText().toString()).matches()) {
             Toast.makeText(requireContext(), "Invalid Email!!", Toast.LENGTH_SHORT).show();
-            isEmailValid = false;
+            return false;
         } else  {
             isEmailValid = true;
         }
 
         if (binding.passText.getText().toString().isEmpty()) {
-            Toast.makeText(requireContext(), "Invalid Password!!", Toast.LENGTH_SHORT).show();
-            isPasswordValid = false;
+            Toast.makeText(requireContext(), "Password is required!!", Toast.LENGTH_SHORT).show();
+            return false;
         } else if (binding.passText.getText().length() < 6) {
-            Toast.makeText(requireContext(), "Invalid Password!!", Toast.LENGTH_SHORT).show();
-            isPasswordValid = false;
+            Toast.makeText(requireContext(), "Password should be more than 6 letters!!", Toast.LENGTH_SHORT).show();
+            return false;
         } else  {
             if(binding.passText.getText().toString().equals(binding.confirmPassText.getText().toString())){
                 isPasswordValid = true;
             }else{
-                isPasswordValid = false;
-                Toast.makeText(requireContext(), "Passwords do not match!!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(),"Passwords do not match!!", Toast.LENGTH_SHORT).show();
+                return false;
             }
         }
 

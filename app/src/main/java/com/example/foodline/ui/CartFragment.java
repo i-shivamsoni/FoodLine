@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,16 +59,19 @@ public class CartFragment extends Fragment {
         cartViewModel.getCartItems().observe(getViewLifecycleOwner(), cartList -> {
             if(cartList != null){
                 adapter.submitList(cartList);
+                adapter.notifyDataSetChanged();
                 if(cartList.size() == 0){
                     binding.emptyCartText.setVisibility(View.VISIBLE);
                     binding.cartItemList.setVisibility(View.GONE);
                     binding.payBtn.setVisibility(View.GONE);
+                    binding.dividerView.setVisibility(View.GONE);
                     binding.grandTotalLayout.setVisibility(View.GONE);
                     binding.orderingForLayout.setVisibility(View.GONE);
                 }else{
                     binding.emptyCartText.setVisibility(View.GONE);
                     binding.cartItemList.setVisibility(View.VISIBLE);
                     binding.payBtn.setVisibility(View.VISIBLE);
+                    binding.dividerView.setVisibility(View.VISIBLE);
                     binding.grandTotalLayout.setVisibility(View.VISIBLE);
                     binding.orderingForLayout.setVisibility(View.VISIBLE);
                     grandTotal = 0;

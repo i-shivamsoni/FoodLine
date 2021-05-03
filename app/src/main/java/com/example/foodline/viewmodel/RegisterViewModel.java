@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.foodline.model.DefaultResponse;
 import com.example.foodline.repository.FoodRepository;
+import com.example.foodline.utils.ScreenUtils;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,15 +35,21 @@ public class RegisterViewModel extends AndroidViewModel {
             @Override
             public void onResponse(Call<DefaultResponse> call, Response<DefaultResponse> response) {
                 if(response.code() == 200) {
+                    Toast.makeText(getApplication(), "Registered Successfully:)", Toast.LENGTH_SHORT).show();
                     isRegistered.setValue(true);
                 }else if(response.code() == 400){
-                    isRegistered.setValue(false);
                     Toast.makeText(getApplication(), "You are already registered :)", Toast.LENGTH_SHORT).show();
+                    isRegistered.setValue(false);
                 }
             }
 
             @Override
             public void onFailure(Call<DefaultResponse> call, Throwable t) {
+                if(!ScreenUtils.isInternetAvailable()){
+                    Toast.makeText(getApplication(), "Check your internet connection and try again :(", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(getApplication(), "Something went wrong :(", Toast.LENGTH_SHORT).show();
+                }
                 isRegistered.setValue(false);
                 t.printStackTrace();
             }

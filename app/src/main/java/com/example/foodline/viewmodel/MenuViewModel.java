@@ -14,6 +14,7 @@ public class MenuViewModel extends AndroidViewModel {
 
     private FoodRepository foodRepository;
     private MutableLiveData<List<MenuItem>> menuItems = new MutableLiveData<>();
+    private MutableLiveData<List<MenuItem>> searchedMenuItems = new MutableLiveData<>();
 
     public MenuViewModel(Application application){
         super(application);
@@ -23,6 +24,10 @@ public class MenuViewModel extends AndroidViewModel {
 
     public MutableLiveData<List<MenuItem>> getMenuItems() {
         return menuItems;
+    }
+
+    public MutableLiveData<List<MenuItem>> getSearchedMenuItems() {
+        return searchedMenuItems;
     }
 
     public void update(MenuItem menuItem) {

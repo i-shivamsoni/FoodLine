@@ -20,14 +20,14 @@
             android:clipToPadding="false"
             android:paddingVertical="8dp"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:layout_constraintBottom_toTopOf="@+id/view"
+            app:layout_constraintBottom_toTopOf="@+id/divider_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:spanCount="1" />
 
         <View
-            android:id="@+id/view"
+            android:id="@+id/divider_view"
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_marginBottom="16dp"
