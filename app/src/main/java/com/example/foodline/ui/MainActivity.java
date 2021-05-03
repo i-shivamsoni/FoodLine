@@ -18,7 +18,7 @@ import dev.shreyaspatil.easyupipayment.listener.PaymentStatusListener;
 import dev.shreyaspatil.easyupipayment.model.PaymentApp;
 import dev.shreyaspatil.easyupipayment.model.TransactionDetails;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements PaymentStatusListener {
 
     private ActivityMainBinding binding;
     private NavController navController;
@@ -30,7 +30,8 @@ public class MainActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         navController = Navigation.findNavController(this, R.id.nav_host_fragment_login);
-
+        // initcheckout();
+        easyUpiPayment.setPaymentStatusListener((PaymentStatusListener) this);
 
     }
 
