@@ -8,9 +8,9 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.foodline.model.DefaultResponse;
 import com.example.foodline.repository.FoodRepository;
-import com.example.foodline.utils.ScreenUtils;
-
-import java.net.InetAddress;
+import com.example.foodline.utils.ScreenUtil;
+import com.example.foodline.utils.SharedPreferenceUtil;
+import com.google.gson.Gson;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -24,9 +24,12 @@ public class LoginViewModel extends AndroidViewModel {
 
     private MutableLiveData<Boolean> isAuthenticated = new MutableLiveData<>();
 
+    private SharedPreferenceUtil sharedPreferenceUtil;
+
     public LoginViewModel(Application application){
         super(application);
         this.foodRepository = FoodRepository.getInstance(application);
+        this.sharedPreferenceUtil = SharedPreferenceUtil.getInstance(application);
     }
 
     public MutableLiveData<String> getEmail() {
@@ -46,6 +49,7 @@ public class LoginViewModel extends AndroidViewModel {
                 if(response.code() == 200) {
                     Toast.makeText(getApplication(), "Login Successful :)", Toast.LENGTH_SHORT).show();
                     DefaultResponse defaultResponse = response.body();
+                    sharedPreferenceUtil.setUserDetails(new Gson().toJson(defaultResponse));
                     isAuthenticated.setValue(true);
                 }else{
                     Toast.makeText(getApplication(), "Please, check your email and password and try again!!", Toast.LENGTH_SHORT).show();
@@ -55,7 +59,7 @@ public class LoginViewModel extends AndroidViewModel {
 
             @Override
             public void onFailure(Call<DefaultResponse> call, Throwable t) {
-                if(!ScreenUtils.isInternetAvailable()){
+                if(!ScreenUtil.isInternetAvailable()){
                     Toast.makeText(getApplication(), "Check your internet connection and try again :(", Toast.LENGTH_SHORT).show();
                 }else {
                     Toast.makeText(getApplication(), "Something went wrong :(", Toast.LENGTH_SHORT).show();

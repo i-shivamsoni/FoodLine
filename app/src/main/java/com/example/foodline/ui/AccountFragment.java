@@ -13,7 +13,9 @@ import android.view.ViewGroup;
 
 import com.example.foodline.R;
 import com.example.foodline.databinding.FragmentAccountBinding;
+import com.example.foodline.model.DefaultResponse;
 import com.example.foodline.utils.SharedPreferenceUtil;
+import com.google.gson.Gson;
 
 public class AccountFragment extends Fragment {
 
@@ -36,6 +38,10 @@ public class AccountFragment extends Fragment {
         ((BaseActivity) requireActivity()).setAppBar(2);
 
         sharedPreferenceUtil = SharedPreferenceUtil.getInstance(requireContext());
+
+        DefaultResponse defaultResponse = new Gson().fromJson(sharedPreferenceUtil.getUserDetails(), DefaultResponse.class);
+
+        binding.userName.setText(defaultResponse.getName());
 
         binding.logoutBtn.setOnClickListener(v -> {
             sharedPreferenceUtil.setIsLogin(false);

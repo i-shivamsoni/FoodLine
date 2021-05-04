@@ -8,6 +8,7 @@ import androidx.preference.PreferenceManager;
 public class SharedPreferenceUtil {
 
     private static final String LOGIN_KEY = "login_key";
+    private static final String USER_KEY = "user_key";
 
     private static SharedPreferenceUtil INSTANCE;
     private SharedPreferences sharedPreferences;
@@ -31,5 +32,13 @@ public class SharedPreferenceUtil {
 
     public void setIsLogin(boolean isLogin){
         sharedPreferences.edit().putBoolean(LOGIN_KEY, isLogin).apply();
+    }
+
+    public String getUserDetails(){
+        return sharedPreferences.getString(USER_KEY, null);
+    }
+
+    public void setUserDetails(String user){
+        sharedPreferences.edit().putString(USER_KEY, user).apply();
     }
 }

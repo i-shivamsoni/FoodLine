@@ -4,38 +4,52 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import com.google.gson.annotations.SerializedName;
+
 @Entity(tableName = "menu_item_table")
 public class MenuItem {
 
+    @SerializedName("_id")
     @PrimaryKey
     private int id;
+
+    @SerializedName("dish_name")
     private String name;
+
     private String category;
+
+    @SerializedName("image")
     private String imageUrl;
+
     private String rating;
+
+    @SerializedName("numReviews")
+    private int numOfReviews;
+
     private String price;
+
     private int counterInStock;
+
     private int counterInCart;
 
-    public MenuItem(int id,String name, String category, String price, String imageUrl) {
-        this.id = id;
-        this.name = name;
-        this.category = category;
-        this.price = price;
-        this.imageUrl = imageUrl;
-        this.counterInCart = 0;
-    }
-
-    @Ignore
-    public MenuItem(int id, String name, String category, String imageUrl, String rating, String price, int counterInStock) {
+    public MenuItem(int id, String name, String category, String imageUrl, String rating, int numOfReviews, String price, int counterInStock) {
         this.id = id;
         this.name = name;
         this.category = category;
         this.imageUrl = imageUrl;
         this.rating = rating;
+        this.numOfReviews = numOfReviews;
         this.price = price;
         this.counterInStock = counterInStock;
         this.counterInCart = 0;
+    }
+
+    public int getNumOfReviews() {
+        return numOfReviews;
+    }
+
+    public void setNumOfReviews(int numOfReviews) {
+        this.numOfReviews = numOfReviews;
     }
 
     public String getRating() {

@@ -1,7 +1,5 @@
 package com.example.foodline.ui;
 
-import android.app.Activity;
-import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
@@ -17,7 +15,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,7 +23,10 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.example.foodline.R;
 import com.example.foodline.databinding.FragmentMenuBinding;
 import com.example.foodline.databinding.MenuItemBottomSheetLayoutBinding;
+import com.example.foodline.model.FoodApiStatus;
 import com.example.foodline.model.MenuItem;
+import com.example.foodline.utils.ScreenUtil;
+import com.example.foodline.utils.SpaceItemDecorationUtil;
 import com.example.foodline.viewmodel.MenuViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
@@ -82,6 +82,7 @@ public class MenuFragment extends Fragment {
         });
 
         binding.menuItemList.setAdapter(adapter);
+        binding.menuItemList.addItemDecoration(new SpaceItemDecorationUtil((int) ScreenUtil.dptoPx(requireContext(), 12f)));
 
         setListeners();
         observeData();
@@ -113,6 +114,11 @@ public class MenuFragment extends Fragment {
                 return true;
             }
         });
+
+        binding.refreshLayout.setOnRefreshListener(() -> {
+            menuViewModel.refreshMenu();
+            binding.refreshLayout.setRefreshing(false);
+        });
     }
 
     private void searchQueryInList(List<MenuItem> value, String query) {
@@ -140,6 +146,32 @@ public class MenuFragment extends Fragment {
         menuViewModel.getSearchedMenuItems().observe(getViewLifecycleOwner(), searchList -> {
             if(searchList != null){
                 searchedItems = searchList;
+            }
+        });
+
+        menuViewModel.getFoodApiStatus().observe(getViewLifecycleOwner(), foodApiStatus -> {
+            if(foodApiStatus != null){
+                if (foodApiStatus == FoodApiStatus.LOADING) {
+                    binding.loadingView.setVisibility(View.VISIBLE);
+                    binding.menuItemList.setVisibility(View.GONE);
+                    binding.noInternetText.setVisibility(View.GONE);
+                    binding.failureText.setVisibility(View.GONE);
+                } else if (foodApiStatus == FoodApiStatus.NO_INTERNET) {
+                    binding.loadingView.setVisibility(View.GONE);
+                    binding.menuItemList.setVisibility(View.GONE);
+                    binding.noInternetText.setVisibility(View.VISIBLE);
+                    binding.failureText.setVisibility(View.GONE);
+                } else if (foodApiStatus == FoodApiStatus.SUCCESS) {
+                    binding.loadingView.setVisibility(View.GONE);
+                    binding.menuItemList.setVisibility(View.VISIBLE);
+                    binding.noInternetText.setVisibility(View.GONE);
+                    binding.failureText.setVisibility(View.GONE);
+                } else {
+                    binding.loadingView.setVisibility(View.GONE);
+                    binding.menuItemList.setVisibility(View.GONE);
+                    binding.noInternetText.setVisibility(View.GONE);
+                    binding.failureText.setVisibility(View.VISIBLE);
+                }
             }
         });
     }
@@ -195,8 +227,6 @@ public class MenuFragment extends Fragment {
             Toast.makeText(requireContext(), "Added to Cart :)", Toast.LENGTH_SHORT).show();
             bottomSheetDialog.dismiss();
         });
-
-
 
         bottomSheetDialog.setContentView(bottomSheetLayoutBinding.getRoot());
         bottomSheetDialog.show();

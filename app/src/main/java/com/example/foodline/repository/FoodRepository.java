@@ -1,37 +1,48 @@
 package com.example.foodline.repository;
 
 import android.app.Application;
-import android.os.AsyncTask;
+import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.foodline.database.FoodDao;
 import com.example.foodline.database.FoodDatabase;
 import com.example.foodline.model.DefaultResponse;
+import com.example.foodline.model.FoodApiStatus;
 import com.example.foodline.model.MenuItem;
 import com.example.foodline.network.FoodApiService;
+import com.example.foodline.utils.ScreenUtil;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FoodRepository {
 
     private static FoodRepository INSTANCE;
 
     private FoodApiService foodApiService;
-    private List<MenuItem> menuItems;
+    private MutableLiveData<List<MenuItem>> menuItems;
+    private MutableLiveData<FoodApiStatus> foodApiStatus;
     private Application application;
     private FoodDao foodDao;
 
+    private ExecutorService executor;
+
     private FoodRepository(Application application){
         this.foodApiService = FoodApiService.getInstance();
-        this.menuItems = new ArrayList<MenuItem>();
+        this.menuItems = new MutableLiveData<>();
+        this.foodApiStatus = new MutableLiveData<>();
         this.application = application;
         this.foodDao = FoodDatabase.getInstance(application).foodDao();
+        this.executor = Executors.newSingleThreadExecutor();
 
-        initializeMenuItem();
+        initializeMenu();
     }
 
     public static FoodRepository getInstance(Application application){
@@ -43,34 +54,55 @@ public class FoodRepository {
         return INSTANCE;
     }
 
-    private void initializeMenuItem() {
-        menuItems.add(new MenuItem(1,"Pizza", "Fast Food", "200",""));
-        menuItems.add(new MenuItem(2,"Burger", "Fast Food", "50",""));
-        menuItems.add(new MenuItem(3,"Coffee", "Fast Food", "20",""));
-        menuItems.add(new MenuItem(4,"Tea", "Fast Food", "20",""));
-        menuItems.add(new MenuItem(5,"Samosa", "Fast Food", "20",""));
-        menuItems.add(new MenuItem(6,"Hot Dog", "Fast Food", "90",""));
-        menuItems.add(new MenuItem(7,"Thali", "Fast Food", "70",""));
-        menuItems.add(new MenuItem(8,"Dhosa", "Fast Food", "70",""));
-        menuItems.add(new MenuItem(9,"Pav Bhaji", "Fast Food", "60",""));
-        menuItems.add(new MenuItem(10,"Sprite", "Fast Food", "30",""));
-        menuItems.add(new MenuItem(11,"Frooti", "Fast Food", "30",""));
-        menuItems.add(new MenuItem(12,"Maaza", "Fast Food", "30",""));
-        menuItems.add(new MenuItem(13,"Pasta", "Fast Food", "40",""));
-        menuItems.add(new MenuItem(14, "Maggi", "Fast Food", "40",""));
-        menuItems.add(new MenuItem(15,"Chowmein", "Fast Food", "40",""));
-        menuItems.add(new MenuItem(16,"Manchurian", "Fast Food", "40",""));
-        menuItems.add(new MenuItem(17,"Paneer", "Fast Food", "40",""));
-        menuItems.add(new MenuItem(18,"Chicken Tikka", "Fast Food", "80",""));
-        menuItems.add(new MenuItem(19,"Veg Roll", "Fast Food", "50",""));
+    private void initializeMenu(){
+        Call<List<MenuItem>> call =  foodApiService.getMenu();
+        foodApiStatus.setValue(FoodApiStatus.LOADING);
 
-        InsertMenuItemsTask insertMenuItemsTask = new InsertMenuItemsTask(foodDao, application);
-        insertMenuItemsTask.execute(menuItems);
+        call.enqueue(new Callback<List<MenuItem>>() {
+            @Override
+            public void onResponse(Call<List<MenuItem>> call, Response<List<MenuItem>> response) {
+                if(response.code() == 200){
+                    menuItems.setValue(response.body());
+                    foodApiStatus.setValue(FoodApiStatus.SUCCESS);
+                    insertMenuItems(menuItems.getValue());
+                }else{
+                    foodApiStatus.setValue(FoodApiStatus.FAILURE);
+                    Toast.makeText(application, "Something went wrong :(",Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<MenuItem>> call, Throwable t) {
+                if(!ScreenUtil.isInternetAvailable()){
+                    foodApiStatus.setValue(FoodApiStatus.NO_INTERNET);
+                    Toast.makeText(application, "No Internet Connection :(",Toast.LENGTH_SHORT).show();
+                }else{
+                    foodApiStatus.setValue(FoodApiStatus.FAILURE);
+                    Toast.makeText(application, "Something went wrong :(",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    public MutableLiveData<FoodApiStatus> getFoodApiStatus() {
+        return foodApiStatus;
+    }
+
+    public MutableLiveData<List<MenuItem>> getMenuItems() {
+        return menuItems;
+    }
+
+    public void insertMenuItems(List<MenuItem> menuItems) {
+        executor.execute(() -> {
+            foodDao.deleteAllMenuItems();
+            foodDao.insertAll(menuItems.toArray(new MenuItem[0]));
+        });
     }
 
     public void updateMenuItem(MenuItem menuItem){
-        UpdateMenuItemsTask updateMenuItemsTask = new UpdateMenuItemsTask(foodDao, application);
-        updateMenuItemsTask.execute(menuItem);
+        executor.execute(() -> {
+            foodDao.update(menuItem);
+        });
     }
 
     public Call<DefaultResponse> authenticateUser(String email, String password){
@@ -81,51 +113,11 @@ public class FoodRepository {
         return foodApiService.registerUser(name, email, password);
     }
 
-    public List<MenuItem> getMenuItems() {
-        return menuItems;
-    }
-
     public LiveData<List<MenuItem>> getCartMenuItem(){
         return foodDao.getCartMenuItem();
     }
 
-    private static class InsertMenuItemsTask extends AsyncTask<List<MenuItem>, Void, Void>{
-
-        private FoodDao foodDao;
-        private Application application;
-
-        public InsertMenuItemsTask(FoodDao foodDao, Application application){
-            this.foodDao = foodDao;
-            this.application = application;
-        }
-
-        @Override
-        protected Void doInBackground(List<MenuItem>... lists) {
-            List<MenuItem> menuItems = lists[0];
-
-            foodDao.deleteAllMenuItems();
-            foodDao.insertAll(menuItems.toArray(new MenuItem[0]));
-
-            return null;
-        }
-    }
-
-    private static class UpdateMenuItemsTask extends AsyncTask<MenuItem, Void, Void>{
-
-        private FoodDao foodDao;
-        private Application application;
-
-        public UpdateMenuItemsTask(FoodDao foodDao, Application application){
-            this.foodDao = foodDao;
-            this.application = application;
-        }
-
-        @Override
-        protected Void doInBackground(MenuItem... lists) {
-            MenuItem menuItem = lists[0];
-            foodDao.update(menuItem);
-
-            return null;
-        }
+    public void refreshMenu() {
+        initializeMenu();
     }
 }

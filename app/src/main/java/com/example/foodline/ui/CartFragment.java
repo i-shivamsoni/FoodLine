@@ -7,7 +7,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +15,15 @@ import com.example.foodline.databinding.FragmentCartBinding;
 import com.example.foodline.model.MenuItem;
 import com.example.foodline.viewmodel.CartViewModel;
 
+import java.text.DecimalFormat;
+
 public class CartFragment extends Fragment {
 
     private FragmentCartBinding binding;
 
     private CartItemAdapter adapter;
     private CartViewModel cartViewModel;
-    private int grandTotal = 0;
+    private Float grandTotal = 0f;
 
     public CartFragment() { }
 
@@ -74,11 +75,11 @@ public class CartFragment extends Fragment {
                     binding.dividerView.setVisibility(View.VISIBLE);
                     binding.grandTotalLayout.setVisibility(View.VISIBLE);
                     binding.orderingForLayout.setVisibility(View.VISIBLE);
-                    grandTotal = 0;
+                    grandTotal = 0f;
                     for(MenuItem cartItem: cartList){
-                        grandTotal += (Integer.parseInt(cartItem.getPrice())*cartItem.getCounterInCart());
+                        grandTotal += (Float.parseFloat(cartItem.getPrice())*cartItem.getCounterInCart());
                     }
-                    binding.grandTotalText.setText(String.format("Rs. %d", grandTotal));
+                    binding.grandTotalText.setText(String.format("Rs. %s", new DecimalFormat("#.#").format(grandTotal)));
                 }
             }
         });

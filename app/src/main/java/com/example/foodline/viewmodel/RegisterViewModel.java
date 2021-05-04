@@ -8,7 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.foodline.model.DefaultResponse;
 import com.example.foodline.repository.FoodRepository;
-import com.example.foodline.utils.ScreenUtils;
+import com.example.foodline.utils.ScreenUtil;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -45,7 +45,7 @@ public class RegisterViewModel extends AndroidViewModel {
 
             @Override
             public void onFailure(Call<DefaultResponse> call, Throwable t) {
-                if(!ScreenUtils.isInternetAvailable()){
+                if(!ScreenUtil.isInternetAvailable()){
                     Toast.makeText(getApplication(), "Check your internet connection and try again :(", Toast.LENGTH_SHORT).show();
                 }else{
                     Toast.makeText(getApplication(), "Something went wrong :(", Toast.LENGTH_SHORT).show();

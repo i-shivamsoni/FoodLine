@@ -1,6 +1,9 @@
 package com.example.foodline.network;
 
 import com.example.foodline.model.DefaultResponse;
+import com.example.foodline.model.MenuItem;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -37,5 +40,9 @@ public class FoodApiService {
 
     public Call<DefaultResponse> registerUser(String name, String email, String password){
         return api.register(name, email, password);
+    }
+
+    public Call<List<MenuItem>> getMenu(){
+        return api.getMenu();
     }
 }
