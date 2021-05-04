@@ -1,6 +1,5 @@
 package com.example.foodline.ui;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -12,19 +11,16 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.util.Patterns;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.foodline.R;
 import com.example.foodline.databinding.FragmentLoginBinding;
-import com.example.foodline.utils.ScreenUtils;
+import com.example.foodline.utils.ScreenUtil;
 import com.example.foodline.utils.SharedPreferenceUtil;
 import com.example.foodline.viewmodel.LoginViewModel;
 
@@ -68,7 +64,7 @@ public class LoginFragment extends Fragment {
 
         binding.passText.setOnEditorActionListener((v, actionId, event) -> {
             if(actionId == EditorInfo.IME_ACTION_DONE){
-                ScreenUtils.hideKeyboard(requireActivity());
+                ScreenUtil.hideKeyboard(requireActivity());
                 authenticateUser();
                 return true;
             }

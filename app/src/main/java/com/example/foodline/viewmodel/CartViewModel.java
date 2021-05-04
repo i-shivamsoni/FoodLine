@@ -22,8 +22,14 @@ public class CartViewModel extends AndroidViewModel {
         super(application);
         this.foodRepository = FoodRepository.getInstance(application);
         this.cartItems = foodRepository.getCartMenuItem();
-        this.menuItems.setValue(foodRepository.getMenuItems());
+        this.menuItems = foodRepository.getMenuItems();
     }
+
+//    private void initializeMenuItems() {
+//        foodRepository.getMenuItems().observe(getApplication(), menuList -> {
+//            menuItems.setValue(menuList);
+//        });
+//    }
 
     public LiveData<List<MenuItem>> getCartItems() {
         return cartItems;
