@@ -25,14 +25,13 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_base);
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_order);
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment_order);
 
         CbnMenuItem[] cbnMenuItems = new CbnMenuItem[3];
 
         cbnMenuItems[0] = new CbnMenuItem(R.drawable.ic_menu, R.drawable.ic_menu_avd, R.id.menuFragment);
         cbnMenuItems[1] = new CbnMenuItem(R.drawable.ic_cart, R.drawable.ic_cart_avd, R.id.cartFragment);
         cbnMenuItems[2] = new CbnMenuItem(R.drawable.ic_account, R.drawable.ic_account_avd, R.id.accountFragment);
-
 
         binding.bottomNav.setMenuItems(cbnMenuItems, 0);
         binding.bottomNav.setupWithNavController(navController);

@@ -1,5 +1,8 @@
 package com.example.foodline.ui;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
@@ -15,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,8 +40,6 @@ import java.util.List;
 public class MenuFragment extends Fragment {
 
     private FragmentMenuBinding binding;
-    private ImageView screenIcon;
-    private TextView screenTitleText;
 
     private MenuItemAdapter adapter;
     private List<MenuItem> menuItems = new ArrayList<MenuItem>();
@@ -89,6 +91,15 @@ public class MenuFragment extends Fragment {
     }
 
     private void setListeners() {
+
+        ImageView searchViewCloseButton = binding.searchView.findViewById(R.id.search_close_btn);
+        EditText searchViewEditText = binding.searchView.findViewById(R.id.search_src_text);
+
+        searchViewCloseButton.setOnClickListener(v -> {
+            searchViewEditText.setText("");
+            binding.searchView.clearFocus();
+        });
+
         binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
