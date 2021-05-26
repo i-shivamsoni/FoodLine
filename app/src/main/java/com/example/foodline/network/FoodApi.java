@@ -2,9 +2,12 @@ package com.example.foodline.network;
 
 import com.example.foodline.model.DefaultResponse;
 import com.example.foodline.model.MenuItem;
+import com.example.foodline.network.menu.MenuNetworkEntity;
+import com.example.foodline.network.user.UserNetworkEntity;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Observable;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -15,7 +18,7 @@ public interface FoodApi {
 
     @FormUrlEncoded
     @POST("/api/users/registeruser/")
-    Call<DefaultResponse> register(
+    Observable<UserNetworkEntity> register(
             @Field("name") String name,
             @Field("email") String email,
             @Field("password") String password
@@ -23,11 +26,11 @@ public interface FoodApi {
 
     @FormUrlEncoded
     @POST("/api/users/login/")
-    Call<DefaultResponse> login(
+    Observable<UserNetworkEntity> login(
             @Field("username") String email,
             @Field("password") String password
     );
 
     @GET("/api/menu")
-    Call<List<MenuItem>> getMenu();
+    Observable<List<MenuNetworkEntity>> getMenu();
 }

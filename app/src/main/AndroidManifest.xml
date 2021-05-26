@@ -15,9 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FoodLine"
         tools:replace="android:theme">
-        <activity android:name=".ui.BaseActivity"/>
+        <activity android:name=".ui.main.MainActivity"/>
         <activity
-            android:name=".ui.SplashScreenActivity"
+            android:name=".ui.launcher.SplashScreenActivity"
             android:theme="@style/Theme.Design.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,7 +25,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.MainActivity" />
+        <activity android:name=".ui.auth.AuthActivity" />
     </application>
 
 </manifest>

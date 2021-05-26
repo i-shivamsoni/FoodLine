@@ -6,9 +6,11 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
+import com.example.foodline.database.menu.MenuCacheEntity;
+import com.example.foodline.database.user.UserCacheEntity;
 import com.example.foodline.model.MenuItem;
 
-@Database(entities = {MenuItem.class}, version = 1, exportSchema = false)
+@Database(entities = {MenuCacheEntity.class, UserCacheEntity.class}, version = 1, exportSchema = false)
 public abstract class FoodDatabase extends RoomDatabase {
 
     private static FoodDatabase INSTANCE;

@@ -6,8 +6,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/login_back"
-        tools:context=".ui.RegisterFragment">
+        android:background="@drawable/back_login"
+        tools:context=".ui.auth.register.RegisterFragment">
 
         <ImageView
             android:id="@+id/imageView2"
@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
-            android:background="@drawable/login_card_view_back"
+            android:background="@drawable/back_login_card_view"
             android:elevation="40dp"
             android:paddingVertical="10dp"
             app:layout_constraintBottom_toTopOf="@+id/login_btn"
