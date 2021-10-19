@@ -20,12 +20,18 @@
             app:layout_constraintTop_toTopOf="parent"
             app:navGraph="@navigation/nav_graph_main" />
 
-        <np.com.susanthapa.curved_bottom_navigation.CurvedBottomNavigationView
+        <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_nav"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:cbn_selectedColor="@color/app_back"
-            app:cbn_unSelectedColor="@color/gray"
+            android:layout_margin="20dp"
+            android:elevation="3dp"
+            android:background="@drawable/rounded_corner"
+            app:itemRippleColor="@color/transparent"
+            app:itemIconSize="30dp"
+            app:itemIconTint="@drawable/item_selector"
+            app:labelVisibilityMode="unlabeled"
+            app:menu="@menu/bottom_nav_menu"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

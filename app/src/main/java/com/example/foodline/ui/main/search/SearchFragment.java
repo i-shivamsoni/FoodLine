@@ -34,7 +34,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
 
-import np.com.susanthapa.curved_bottom_navigation.CurvedBottomNavigationView;
 
 public class SearchFragment extends Fragment {
 

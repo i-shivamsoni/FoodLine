@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -13,7 +14,6 @@ import com.example.foodline.R;
 import com.example.foodline.databinding.ActivityMainBinding;
 import com.example.foodline.repository.FoodRepository;
 
-import np.com.susanthapa.curved_bottom_navigation.CbnMenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,15 +31,7 @@ public class MainActivity extends AppCompatActivity {
         foodRepository = FoodRepository.getInstance(getApplication());
 
         navController = Navigation.findNavController(this, R.id.nav_host_fragment_order);
-
-        CbnMenuItem[] cbnMenuItems = new CbnMenuItem[3];
-
-        cbnMenuItems[0] = new CbnMenuItem(R.drawable.ic_menu, R.drawable.ic_menu_avd, R.id.menuFragment);
-        cbnMenuItems[1] = new CbnMenuItem(R.drawable.ic_cart, R.drawable.ic_cart_avd, R.id.cartFragment);
-        cbnMenuItems[2] = new CbnMenuItem(R.drawable.ic_account, R.drawable.ic_account_avd, R.id.accountFragment);
-
-        binding.bottomNav.setMenuItems(cbnMenuItems, 0);
-        binding.bottomNav.setupWithNavController(navController);
+        NavigationUI.setupWithNavController(binding.bottomNav, navController);
 
         setListeners();
     }
