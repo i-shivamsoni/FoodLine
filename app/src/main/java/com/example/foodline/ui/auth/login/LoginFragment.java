@@ -22,9 +22,8 @@ import android.widget.Toast;
 
 import com.example.foodline.R;
 import com.example.foodline.databinding.FragmentLoginBinding;
+import com.example.foodline.ui.admin.AdminActivity;
 import com.example.foodline.ui.main.MainActivity;
-import com.example.foodline.utils.ScreenUtil;
-import com.example.foodline.utils.SharedPreferenceUtil;
 
 public class LoginFragment extends Fragment {
 
@@ -99,7 +98,17 @@ public class LoginFragment extends Fragment {
                         showProgressBar(false);
                         showToast("Login Successful :)");
                         loginViewModel.setIsLogin(true);
-                        navToMenu();
+
+
+                        if (userLoginState.data != null && userLoginState.data.getIsAdmin()) {
+                            loginViewModel.setIsAdmin(true);
+                            navToAdmin();
+                        } else {
+                            navToMain();
+                        }
+
+                        Log.d(TAG, userLoginState.data.toString());
+
                         requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                         break;
                     }
@@ -121,7 +130,16 @@ public class LoginFragment extends Fragment {
         });
     }
 
-    private void navToMenu() {
+    private void navToAdmin() {
+        Activity activity = requireActivity();
+
+        Intent intent = new Intent(activity, AdminActivity.class);
+        startActivity(intent);
+        activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        activity.finish();
+    }
+
+    private void navToMain() {
         Activity activity = requireActivity();
 
         Intent intent = new Intent(activity, MainActivity.class);

@@ -19,10 +19,6 @@ public class AuthActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_auth);
-
         navController = Navigation.findNavController(this, R.id.nav_host_fragment_login);
-
-
     }
-
 }

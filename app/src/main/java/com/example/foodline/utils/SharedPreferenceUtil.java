@@ -9,6 +9,7 @@ public class SharedPreferenceUtil {
 
     private static final String LOGIN_KEY = "login_key";
     private static final String USER_KEY = "user_key";
+    private static final String ADMIN_KEY = "admin_key";
 
     private static SharedPreferenceUtil INSTANCE;
     private SharedPreferences sharedPreferences;
@@ -40,5 +41,13 @@ public class SharedPreferenceUtil {
 
     public void setUserDetails(String user){
         sharedPreferences.edit().putString(USER_KEY, user).apply();
+    }
+
+    public boolean getIsAdmin() {
+        return sharedPreferences.getBoolean(ADMIN_KEY, false);
+    }
+
+    public void setIsAdmin(boolean isAdmin) {
+        sharedPreferences.edit().putBoolean(ADMIN_KEY, isAdmin).apply();
     }
 }

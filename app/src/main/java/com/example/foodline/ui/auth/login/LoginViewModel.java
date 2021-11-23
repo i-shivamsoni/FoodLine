@@ -76,8 +76,10 @@ public class LoginViewModel extends AndroidViewModel {
     }
 
     public void setIsLogin(boolean isLogin) {
-        if(isLogin){
-            sharedPreferenceUtil.setIsLogin(isLogin);
-        }
+        sharedPreferenceUtil.setIsLogin(isLogin);
+    }
+
+    public void setIsAdmin(boolean isAdmin) {
+        sharedPreferenceUtil.setIsAdmin(isAdmin);
     }
 }
