@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/currentOrdersFragment"
+        android:icon="@drawable/ic_cart"
+        android:title="Current orders" />
+    <item
+        android:id="@+id/notificationsFragment"
+        android:icon="@drawable/ic_menu"
+        android:title="Notifications" />
+    <item
+        android:id="@+id/adminAccountFragment"
+        android:icon="@drawable/ic_account"
+        android:title="Admin Account" />
+</menu>

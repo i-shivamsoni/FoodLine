@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_admin"
+    app:startDestination="@id/currentOrdersFragment">
+
+    <fragment
+        android:id="@+id/currentOrdersFragment"
+        android:name="com.example.foodline.ui.admin.current_orders.CurrentOrdersFragment"
+        android:label="CurrentOrdersFragment"
+        tools:layout="@layout/fragment_current_orders"/>
+    <fragment
+        android:id="@+id/notificationsFragment"
+        android:name="com.example.foodline.ui.admin.notifications.NotificationsFragment"
+        android:label="NotificationsFragment"
+        tools:layout="@layout/fragment_notifications" />
+    <fragment
+        android:id="@+id/adminAccountFragment"
+        android:name="com.example.foodline.ui.admin.admin_account.AdminAccountFragment"
+        android:label="AdminAccountFragment"
+        tools:layout="@layout/fragment_admin_account" />
+</navigation>

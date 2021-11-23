@@ -3,8 +3,14 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Akshat/Major Project/FoodLine/FoodLine/app/src/main/res/layout/activity_admin.xml" value="0.25" />
+        <entry key="..\:/Akshat/Major Project/FoodLine/FoodLine/app/src/main/res/layout/activity_admin.xml" value="0.1" />
+        <entry key="..\:/Akshat/Major Project/FoodLine/FoodLine/app/src/main/res/layout/activity_main.xml" value="0.25416666666666665" />
+        <entry key="..\:/Akshat/Major Project/FoodLine/FoodLine/app/src/main/res/layout/fragment_admin_account.xml" value="0.25416666666666665" />
+        <entry key="..\:/Akshat/Major Project/FoodLine/FoodLine/app/src/main/res/layout/fragment_current_orders.xml" value="0.18984375" />
         <entry key="..\:/Akshat/Major Project/FoodLine/FoodLine/app/src/main/res/layout/fragment_login.xml" value="0.25" />
+        <entry key="..\:/Akshat/Major Project/FoodLine/FoodLine/app/src/main/res/layout/fragment_notifications.xml" value="0.24010416666666667" />
+        <entry key="..\:/Akshat/Major Project/FoodLine/FoodLine/app/src/main/res/menu/bottom_nav_menu.xml" value="0.25416666666666665" />
+        <entry key="..\:/Akshat/Major Project/FoodLine/FoodLine/app/src/main/res/menu/bottom_nav_menu_admin.xml" value="0.190625" />
       </map>
     </option>
   </component>
