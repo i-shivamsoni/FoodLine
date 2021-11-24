@@ -10,6 +10,7 @@ public class SharedPreferenceUtil {
     private static final String LOGIN_KEY = "login_key";
     private static final String USER_KEY = "user_key";
     private static final String ADMIN_KEY = "admin_key";
+    private static final String TOKEN_KEY = "token_key";
 
     private static SharedPreferenceUtil INSTANCE;
     private SharedPreferences sharedPreferences;
@@ -49,5 +50,13 @@ public class SharedPreferenceUtil {
 
     public void setIsAdmin(boolean isAdmin) {
         sharedPreferences.edit().putBoolean(ADMIN_KEY, isAdmin).apply();
+    }
+
+    public String getFCMToken(){
+        return sharedPreferences.getString(TOKEN_KEY, "");
+    }
+
+    public void setFCMToken(String token) {
+        sharedPreferences.edit().putString(TOKEN_KEY, token).apply();
     }
 }

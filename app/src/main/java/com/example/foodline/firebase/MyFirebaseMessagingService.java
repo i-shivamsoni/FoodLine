@@ -13,6 +13,8 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.foodline.R;
+import com.example.foodline.repository.FoodRepository;
+import com.example.foodline.utils.SharedPreferenceUtil;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -22,15 +24,21 @@ import java.util.Map;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
-    private final String TAG = this.getClass().getSimpleName();
+    private final String TAG = "MyFirebaseMessagingService";
     private final String NOTIFICATION_CHANNEL_ID = "foodline_channel";
+    private SharedPreferenceUtil sharedPreferenceUtil;
+
+    public MyFirebaseMessagingService() {
+        sharedPreferenceUtil = SharedPreferenceUtil.getInstance(getApplication());
+    }
 
     @Override
-    public void onNewToken(@NonNull String s) {
-        super.onNewToken(s);
+    public void onNewToken(@NonNull String token) {
+        super.onNewToken(token);
 
-        // todo - upload the token to api
-        Log.d(TAG, "token: " + s);
+        Log.d(TAG, "FCM token: " + token);
+        // whenever a token is generated add the token to locally
+        sharedPreferenceUtil.setFCMToken(token);
     }
 
     @Override

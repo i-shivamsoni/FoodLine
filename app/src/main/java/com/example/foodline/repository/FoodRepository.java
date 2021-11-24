@@ -13,6 +13,7 @@ import com.example.foodline.database.user.UserCacheMapper;
 import com.example.foodline.model.MenuItem;
 import com.example.foodline.model.User;
 import com.example.foodline.network.FoodApiService;
+import com.example.foodline.network.fcm_token.FCMTokenNetworkEntity;
 import com.example.foodline.network.menu.MenuNetworkEntity;
 import com.example.foodline.network.menu.MenuNetworkMapper;
 import com.example.foodline.network.user.UserNetworkEntity;
@@ -21,6 +22,7 @@ import com.example.foodline.ui.auth.login.LoginState;
 import com.example.foodline.ui.auth.register.RegisterState;
 import com.example.foodline.ui.main.cart.CartState;
 import com.example.foodline.ui.main.menu.MenuState;
+import com.example.foodline.utils.SharedPreferenceUtil;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -44,6 +46,7 @@ public class FoodRepository {
     private final UserNetworkMapper userNetworkMapper;
     private final MenuCacheMapper menuCacheMapper;
     private final MenuNetworkMapper menuNetworkMapper;
+    private final SharedPreferenceUtil sharedPreferenceUtil;
 
     private final ExecutorService executor;
     private final Handler handler;
@@ -58,6 +61,7 @@ public class FoodRepository {
         this.userNetworkMapper = new UserNetworkMapper();
         this.menuCacheMapper = new MenuCacheMapper();
         this.menuNetworkMapper = new MenuNetworkMapper();
+        this.sharedPreferenceUtil = SharedPreferenceUtil.getInstance(application);
         this.executor = Executors.newSingleThreadExecutor();
         this.handler = new Handler(Looper.getMainLooper());
     }
@@ -86,10 +90,36 @@ public class FoodRepository {
                         @Override
                         public void onNext(@NonNull UserNetworkEntity userNetworkEntity) {
                             User user = userNetworkMapper.mapFromEntity(userNetworkEntity);
-                            foodDao.insert(userCacheMapper.mapToEntity(user));
+                            foodDao.insertUser(userCacheMapper.mapToEntity(user));
                             emitter.onNext(LoginState.authenticated(userCacheMapper.mapFromEntity(foodDao.getUser())));
 
                             Log.d(TAG, "onNext: Authenticated");
+
+                            // If user logins send the FCM token to api
+                            Log.d(TAG, "user token " + userNetworkEntity.getToken() + " fcm token " + sharedPreferenceUtil.getFCMToken() +
+                                    " user id " + userNetworkEntity.getId());
+
+                            foodApiService.sendToken("Bearer " + userNetworkEntity.getToken(), sharedPreferenceUtil.getFCMToken(), userNetworkEntity.getId())
+                                    .subscribe(new Observer<FCMTokenNetworkEntity>() {
+                                        @Override
+                                        public void onSubscribe(@NonNull Disposable d) {
+                                        }
+
+                                        @Override
+                                        public void onNext(@NonNull FCMTokenNetworkEntity fcmTokenNetworkEntity) {
+                                            Log.d(TAG, "FCM token: added to api " + fcmTokenNetworkEntity.toString());
+                                        }
+
+                                        @Override
+                                        public void onError(@NonNull Throwable e) {
+                                            Log.d(TAG, "FCM token: Error " + e.toString());
+                                        }
+
+                                        @Override
+                                        public void onComplete() {
+
+                                        }
+                                    });
                         }
 
                         @Override
@@ -121,6 +151,7 @@ public class FoodRepository {
                         public void onNext(@NonNull UserNetworkEntity userNetworkEntity) {
                             emitter.onNext(RegisterState.registered());
                             Log.d(TAG, "onNext: Registered");
+
                         }
 
                         @Override
@@ -167,7 +198,7 @@ public class FoodRepository {
                             List<MenuItem> menuItems = menuNetworkMapper.mapFromEntityList(dishNetworkEntities);
 
                             for(MenuItem menuItem: menuItems){
-                                foodDao.insert(menuCacheMapper.mapToEntity(menuItem));
+                                foodDao.insertUser(menuCacheMapper.mapToEntity(menuItem));
                             }
 
                             menuState = MenuState.success(menuCacheMapper.mapFromEntityList(foodDao.getMenu()));
@@ -212,7 +243,7 @@ public class FoodRepository {
                                         }
                                     }
                                 }
-                                foodDao.insert(menuCacheMapper.mapToEntity(menuItem));
+                                foodDao.insertUser(menuCacheMapper.mapToEntity(menuItem));
                             }
 
                             menuState = MenuState.success(menuCacheMapper.mapFromEntityList(foodDao.getMenu()));
@@ -237,10 +268,6 @@ public class FoodRepository {
             foodDao.update(menuCacheMapper.mapToEntity(menuItem));
             menuState = MenuState.success(menuCacheMapper.mapFromEntityList(foodDao.getMenu()));
         });
-    }
-
-    private void showToast(String text) {
-        Toast.makeText(application, text, Toast.LENGTH_SHORT).show();
     }
 
     public Observable<CartState<List<MenuItem>>> getCartMenuItem(){

@@ -1,5 +1,6 @@
 package com.example.foodline.network;
 
+import com.example.foodline.network.fcm_token.FCMTokenNetworkEntity;
 import com.example.foodline.network.menu.MenuNetworkEntity;
 import com.example.foodline.network.user.UserNetworkEntity;
 
@@ -44,5 +45,9 @@ public class FoodApiService {
 
     public Observable<List<MenuNetworkEntity>> getMenu(){
         return api.getMenu();
+    }
+
+    public Observable<FCMTokenNetworkEntity> sendToken(String authToken, String fcmToken, int userId) {
+        return api.sendToken(authToken, fcmToken, userId);
     }
 }

@@ -17,7 +17,7 @@ import java.util.List;
 public interface FoodDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(MenuCacheEntity menuItem);
+    void insertUser(MenuCacheEntity menuItem);
 
     @Update
     void update(MenuCacheEntity menuItem);
@@ -32,7 +32,7 @@ public interface FoodDao {
     void deleteAllMenuItems();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    long insert(UserCacheEntity user);
+    long insertUser(UserCacheEntity user);
 
     @Query("SELECT * FROM user_table")
     UserCacheEntity getUser();
