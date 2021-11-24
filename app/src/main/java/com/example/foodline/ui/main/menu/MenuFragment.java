@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,7 @@ public class MenuFragment extends Fragment {
 
     private BottomSheetDialog bottomSheetDialog;
     private MenuViewModel menuViewModel;
+    private final String TAG = this.getClass().getSimpleName();
 
     public MenuFragment() { }
 

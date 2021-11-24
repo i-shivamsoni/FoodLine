@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "232950334680",
+    "project_id": "foodline-918ac",
+    "storage_bucket": "foodline-918ac.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:232950334680:android:70c21266b0c2e410d0c3ad",
+        "android_client_info": {
+          "package_name": "com.example.foodline"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "232950334680-2oh8pf8kjflojg283ktoh9la3tt9l1mg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.foodline",
+            "certificate_hash": "e0ffa4bbbf42b009142467e04833bb0279f8a337"
+          }
+        },
+        {
+          "client_id": "232950334680-sls8i4dve14o7t1st31b440b3s9p7shi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGErvhv-g0EtFjVQhXPCUzHYQ4kH7KmKY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "232950334680-sls8i4dve14o7t1st31b440b3s9p7shi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

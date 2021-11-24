@@ -14,7 +14,7 @@ public class MenuNetworkMapper implements EntityMapper<MenuItem, MenuNetworkEnti
 
     @Override
     public MenuItem mapFromEntity(MenuNetworkEntity menuNetworkEntity) {
-        return new MenuItem(menuNetworkEntity.getId(), menuNetworkEntity.getDishName(),
+        return new MenuItem(menuNetworkEntity.getDishId(), menuNetworkEntity.getDishName(),
                 menuNetworkEntity.getPrice(), menuNetworkEntity.getRating(), menuNetworkEntity.getCategory(),
                 menuNetworkEntity.getImage(), menuNetworkEntity.getDescription(), menuNetworkEntity.getCounterInStock(), 0);
     }

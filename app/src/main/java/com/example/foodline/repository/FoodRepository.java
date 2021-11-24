@@ -216,7 +216,6 @@ public class FoodRepository {
                             }
 
                             menuState = MenuState.success(menuCacheMapper.mapFromEntityList(foodDao.getMenu()));
-
                             emitter.onNext(MenuState.success(menuCacheMapper.mapFromEntityList(foodDao.getMenu())));
                         }
 

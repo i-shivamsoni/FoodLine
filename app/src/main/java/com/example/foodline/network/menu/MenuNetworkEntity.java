@@ -4,8 +4,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class MenuNetworkEntity {
 
-	@SerializedName("_id")
-	private int id;
+	@SerializedName("menuid")
+	private int dishId;
 
 	@SerializedName("dish_name")
 	private String dishName;
@@ -28,8 +28,8 @@ public class MenuNetworkEntity {
 	@SerializedName("counterInStock")
 	private int counterInStock;
 
-	public MenuNetworkEntity(int id, String dishName, String price, String rating, String category, String image, String description, int counterInStock) {
-		this.id = id;
+	public MenuNetworkEntity(int dishId, String dishName, String price, String rating, String category, String image, String description, int counterInStock) {
+		this.dishId = dishId;
 		this.dishName = dishName;
 		this.price = price;
 		this.rating = rating;
@@ -82,12 +82,12 @@ public class MenuNetworkEntity {
 		return description;
 	}
 
-	public void setId(int id){
-		this.id = id;
+	public void setDishId(int dishId){
+		this.dishId = dishId;
 	}
 
-	public int getId(){
-		return id;
+	public int getDishId(){
+		return dishId;
 	}
 
 	public void setCategory(String category){
@@ -109,7 +109,7 @@ public class MenuNetworkEntity {
 	@Override
 	public String toString() {
 		return "DishNetworkEntity{" +
-				"id=" + id +
+				"id=" + dishId +
 				", dishName='" + dishName + '\'' +
 				", price='" + price + '\'' +
 				", rating='" + rating + '\'' +
