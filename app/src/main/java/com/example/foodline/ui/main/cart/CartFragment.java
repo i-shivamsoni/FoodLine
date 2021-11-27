@@ -12,12 +12,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.foodline.databinding.FragmentCartBinding;
 import com.example.foodline.model.MenuItem;
+import com.example.foodline.model.Order;
+import com.example.foodline.model.OrderItem;
 import com.example.foodline.ui.main.MainActivity;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CartFragment extends Fragment {
 
@@ -28,6 +33,8 @@ public class CartFragment extends Fragment {
     private CartItemAdapter adapter;
     private CartViewModel cartViewModel;
     private Float grandTotal = 0f;
+
+    private List<MenuItem> cartItems = new ArrayList<>();
 
     public CartFragment() { }
 
@@ -62,6 +69,22 @@ public class CartFragment extends Fragment {
         cartViewModel.getCartMenuItems();
 
         observerData();
+        setListeners();
+    }
+
+    private void setListeners() {
+        binding.payBtn.setOnClickListener(v -> {
+            if (cartItems != null && !cartItems.isEmpty() && grandTotal != 0f) {
+                List<OrderItem> orderItems = new ArrayList<>();
+
+                for(MenuItem menuItem: cartItems) {
+                    orderItems.add(new OrderItem(menuItem.getId(), menuItem.getCounterInCart(), Float.parseFloat(menuItem.getPrice())));
+                }
+
+                Order order = new Order(orderItems, "card", 0f, grandTotal);
+                cartViewModel.addOrder(order);
+            }
+        });
     }
 
     private void observerData() {
@@ -77,7 +100,8 @@ public class CartFragment extends Fragment {
 
                     case HAS_ITEMS: {
                         showEmptyText(false);
-                        adapter.submitList(listCartState.data);
+                        cartItems = listCartState.data;
+                        adapter.submitList(cartItems);
                         showLayout(true);
                         break;
                     }
@@ -92,9 +116,35 @@ public class CartFragment extends Fragment {
             }
         });
 
-        cartViewModel.getGrandTotal().observe(getViewLifecycleOwner(), grandTotal -> {
-            if(grandTotal != null){
-                binding.grandTotalText.setText(String.format("Rs. %s", grandTotal));
+        cartViewModel.getGrandTotal().observe(getViewLifecycleOwner(), gt -> {
+            if(gt != null){
+                grandTotal = gt;
+                binding.grandTotalText.setText(String.format("Rs. %s", gt));
+            }
+        });
+
+        cartViewModel.getOrderStateLiveData().observe(getViewLifecycleOwner(), orderState -> {
+            if (orderState != null) {
+                switch (orderState.status) {
+                    case LOADING: {
+                        binding.loadingView.setVisibility(View.VISIBLE);
+                        break;
+                    }
+
+                    case SUCCESS: {
+                        binding.loadingView.setVisibility(View.GONE);
+                        binding.grandTotalText.setVisibility(View.GONE);
+                        adapter.submitList(new ArrayList<>());
+                        Toast.makeText(getContext(), "Order placed", Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+
+                    case ERROR: {
+                        binding.loadingView.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), "Something went wrong!! Please try again", Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+                }
             }
         });
     }

@@ -11,10 +11,13 @@ import com.example.foodline.database.FoodDatabase;
 import com.example.foodline.database.menu.MenuCacheMapper;
 import com.example.foodline.database.user.UserCacheMapper;
 import com.example.foodline.model.MenuItem;
+import com.example.foodline.model.Order;
 import com.example.foodline.model.User;
 import com.example.foodline.network.FoodApiService;
 import com.example.foodline.network.menu.MenuNetworkEntity;
 import com.example.foodline.network.menu.MenuNetworkMapper;
+import com.example.foodline.network.order.OrderNetworkEntity;
+import com.example.foodline.network.order.OrderState;
 import com.example.foodline.network.user.UserNetworkEntity;
 import com.example.foodline.network.user.UserNetworkMapper;
 import com.example.foodline.ui.auth.login.LoginState;
@@ -28,6 +31,8 @@ import java.util.concurrent.Executors;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.ObservableEmitter;
+import io.reactivex.rxjava3.core.ObservableOnSubscribe;
 import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.disposables.Disposable;
 
@@ -87,6 +92,7 @@ public class FoodRepository {
                         public void onNext(@NonNull UserNetworkEntity userNetworkEntity) {
                             User user = userNetworkMapper.mapFromEntity(userNetworkEntity);
                             foodDao.insert(userCacheMapper.mapToEntity(user));
+                            Log.d(TAG, "User: " + user);
                             emitter.onNext(LoginState.authenticated(userCacheMapper.mapFromEntity(foodDao.getUser())));
 
                             Log.d(TAG, "onNext: Authenticated");
@@ -276,5 +282,37 @@ public class FoodRepository {
 
     public void deleteUser(){
         executor.execute(() -> foodDao.deleteUser());
+    }
+
+    public Observable<OrderState> addOrder(Order order) {
+        return Observable.create(emitter -> {
+            emitter.onNext(OrderState.loading());
+
+            foodApiService.addOrder(foodDao.getUser().getToken(), order)
+                    .subscribe(new Observer<OrderNetworkEntity>() {
+                        @Override
+                        public void onSubscribe(@NonNull Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(@NonNull OrderNetworkEntity orderNetworkEntity) {
+                            Log.d(TAG, "Order: " + orderNetworkEntity.toString());
+
+                            emitter.onNext(OrderState.success());
+                        }
+
+                        @Override
+                        public void onError(@NonNull Throwable e) {
+                            Log.d(TAG, "Add order: " + e.getMessage() + " order: " + order.toString());
+                            emitter.onNext(OrderState.error(e));
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            emitter.onComplete();
+                        }
+                    });
+        });
     }
 }

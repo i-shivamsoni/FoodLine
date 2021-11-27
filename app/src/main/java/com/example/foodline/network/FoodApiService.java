@@ -1,6 +1,8 @@
 package com.example.foodline.network;
 
+import com.example.foodline.model.Order;
 import com.example.foodline.network.menu.MenuNetworkEntity;
+import com.example.foodline.network.order.OrderNetworkEntity;
 import com.example.foodline.network.user.UserNetworkEntity;
 
 import java.util.List;
@@ -44,5 +46,9 @@ public class FoodApiService {
 
     public Observable<List<MenuNetworkEntity>> getMenu(){
         return api.getMenu();
+    }
+
+    public Observable<OrderNetworkEntity> addOrder(String authToken, Order order) {
+        return api.addOrder("Bearer " + authToken, order);
     }
 }

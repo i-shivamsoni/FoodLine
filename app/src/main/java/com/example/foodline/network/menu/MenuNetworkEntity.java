@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class MenuNetworkEntity {
 
-	@SerializedName("_id")
+	@SerializedName("menuid")
 	private int id;
 
 	@SerializedName("dish_name")

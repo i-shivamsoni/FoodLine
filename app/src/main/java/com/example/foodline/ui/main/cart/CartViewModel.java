@@ -1,7 +1,6 @@
 package com.example.foodline.ui.main.cart;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -9,6 +8,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.foodline.model.MenuItem;
+import com.example.foodline.model.Order;
+import com.example.foodline.network.order.OrderState;
 import com.example.foodline.repository.FoodRepository;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class CartViewModel extends AndroidViewModel {
     private final FoodRepository foodRepository;
     private final MutableLiveData<CartState<List<MenuItem>>> cartState = new MutableLiveData<>();
     private final MutableLiveData<Float> grandTotal = new MutableLiveData<>();
+    private final MutableLiveData<OrderState> orderStateLiveData = new MutableLiveData<>();
 
     public CartViewModel(@NonNull Application application) {
         super(application);
@@ -73,11 +75,39 @@ public class CartViewModel extends AndroidViewModel {
         foodRepository.updateMenuItem(menuItem);
     }
 
+    public void addOrder(Order order) {
+        foodRepository.addOrder(order)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<OrderState>() {
+                    @Override
+                    public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
+                    }
+
+                    @Override
+                    public void onNext(@io.reactivex.rxjava3.annotations.NonNull OrderState orderState) {
+                        orderStateLiveData.setValue(orderState);
+                    }
+
+                    @Override
+                    public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                    }
+
+                    @Override
+                    public void onComplete() {
+                    }
+                });
+    }
+
     public LiveData<CartState<List<MenuItem>>> getCartState() {
         return cartState;
     }
 
     public LiveData<Float> getGrandTotal() {
         return grandTotal;
+    }
+
+    public LiveData<OrderState> getOrderStateLiveData() {
+        return orderStateLiveData;
     }
 }
