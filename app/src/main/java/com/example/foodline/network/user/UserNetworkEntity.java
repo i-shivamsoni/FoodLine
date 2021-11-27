@@ -1,5 +1,6 @@
 package com.example.foodline.network.user;
 
+import com.example.foodline.model.User;
 import com.google.gson.annotations.SerializedName;
 
 public class UserNetworkEntity{
@@ -21,6 +22,11 @@ public class UserNetworkEntity{
 
 	@SerializedName("token")
 	private String token;
+
+	public UserNetworkEntity(String username, String email) {
+		this.username = username;
+		this.email = email;
+	}
 
 	public UserNetworkEntity(int id, String name, String username, String email, boolean isAdmin, String token) {
 		this.id = id;

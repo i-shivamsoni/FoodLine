@@ -3,6 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Akshat/Major Project/FoodLine/FoodLine-Admin/FoodLine/app/src/main/res/layout/fragment_menu.xml" value="0.25416666666666665" />
+        <entry key="..\:/Akshat/Major Project/FoodLine/FoodLine-Admin/FoodLine/app/src/main/res/layout/fragment_notifications.xml" value="0.25416666666666665" />
+        <entry key="..\:/Akshat/Major Project/FoodLine/FoodLine-Admin/FoodLine/app/src/main/res/layout/layout_food_menu_item.xml" value="0.25416666666666665" />
+        <entry key="..\:/Akshat/Major Project/FoodLine/FoodLine-Admin/FoodLine/app/src/main/res/layout/layout_order_item.xml" value="0.25416666666666665" />
         <entry key="..\:/Akshat/Major Project/FoodLine/FoodLine/app/src/main/res/layout/activity_admin.xml" value="0.1" />
         <entry key="..\:/Akshat/Major Project/FoodLine/FoodLine/app/src/main/res/layout/activity_main.xml" value="0.25416666666666665" />
         <entry key="..\:/Akshat/Major Project/FoodLine/FoodLine/app/src/main/res/layout/fragment_admin_account.xml" value="0.25416666666666665" />

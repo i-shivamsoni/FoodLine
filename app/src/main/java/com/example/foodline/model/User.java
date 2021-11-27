@@ -8,6 +8,11 @@ public class User {
 	private boolean isAdmin;
 	private String token;
 
+	public User(String username, String email) {
+		this.username = username;
+		this.email = email;
+	}
+
 	public User(int id, String name, String username, String email, boolean isAdmin, String token) {
 		this.id = id;
 		this.name = name;

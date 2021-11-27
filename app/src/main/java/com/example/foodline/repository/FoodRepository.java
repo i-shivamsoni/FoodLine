@@ -11,11 +11,15 @@ import com.example.foodline.database.FoodDatabase;
 import com.example.foodline.database.menu.MenuCacheMapper;
 import com.example.foodline.database.user.UserCacheMapper;
 import com.example.foodline.model.MenuItem;
+import com.example.foodline.model.Order;
 import com.example.foodline.model.User;
 import com.example.foodline.network.FoodApiService;
 import com.example.foodline.network.fcm_token.FCMTokenNetworkEntity;
 import com.example.foodline.network.menu.MenuNetworkEntity;
 import com.example.foodline.network.menu.MenuNetworkMapper;
+import com.example.foodline.network.order.OrderNetworkEntity;
+import com.example.foodline.network.order.OrderNetworkMapper;
+import com.example.foodline.network.order.OrderState;
 import com.example.foodline.network.user.UserNetworkEntity;
 import com.example.foodline.network.user.UserNetworkMapper;
 import com.example.foodline.ui.auth.login.LoginState;
@@ -24,11 +28,13 @@ import com.example.foodline.ui.main.cart.CartState;
 import com.example.foodline.ui.main.menu.MenuState;
 import com.example.foodline.utils.SharedPreferenceUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.disposables.Disposable;
@@ -46,6 +52,7 @@ public class FoodRepository {
     private final UserNetworkMapper userNetworkMapper;
     private final MenuCacheMapper menuCacheMapper;
     private final MenuNetworkMapper menuNetworkMapper;
+    private final OrderNetworkMapper orderNetworkMapper;
     private final SharedPreferenceUtil sharedPreferenceUtil;
 
     private final ExecutorService executor;
@@ -61,6 +68,7 @@ public class FoodRepository {
         this.userNetworkMapper = new UserNetworkMapper();
         this.menuCacheMapper = new MenuCacheMapper();
         this.menuNetworkMapper = new MenuNetworkMapper();
+        this.orderNetworkMapper = new OrderNetworkMapper();
         this.sharedPreferenceUtil = SharedPreferenceUtil.getInstance(application);
         this.executor = Executors.newSingleThreadExecutor();
         this.handler = new Handler(Looper.getMainLooper());
@@ -93,7 +101,7 @@ public class FoodRepository {
                             foodDao.insertUser(userCacheMapper.mapToEntity(user));
                             emitter.onNext(LoginState.authenticated(userCacheMapper.mapFromEntity(foodDao.getUser())));
 
-                            Log.d(TAG, "onNext: Authenticated");
+                            Log.d(TAG, "onNext: Authenticated " + user);
 
                             // If user logins send the FCM token to api
                             Log.d(TAG, "user token " + userNetworkEntity.getToken() + " fcm token " + sharedPreferenceUtil.getFCMToken() +
@@ -302,5 +310,105 @@ public class FoodRepository {
 
     public void deleteUser(){
         executor.execute(() -> foodDao.deleteUser());
+    }
+
+    public Observable<OrderState<List<Order>>> getNewOrders() {
+        return Observable.create(emitter -> {
+            emitter.onNext(OrderState.loading());
+
+            foodApiService.getOrders(foodDao.getUser().getToken())
+                    .subscribe(new Observer<List<OrderNetworkEntity>>() {
+                        @Override
+                        public void onSubscribe(@NonNull Disposable d) {
+                        }
+
+                        @Override
+                        public void onNext(@NonNull List<OrderNetworkEntity> orderNetworkEntities) {
+                            List<OrderNetworkEntity> orderNetworkEntityList = new ArrayList<>();
+
+                            for(OrderNetworkEntity o: orderNetworkEntities) {
+                                if (!o.isIsAccepted()){
+                                    orderNetworkEntityList.add(o);
+                                }
+                            }
+
+                            emitter.onNext(OrderState.success(orderNetworkMapper.mapFromEntityList(orderNetworkEntityList)));
+                        }
+
+                        @Override
+                        public void onError(@NonNull Throwable e) {
+                            emitter.onNext(OrderState.error(e));
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            emitter.onComplete();
+                        }
+                    });
+        });
+    }
+
+    public Observable<OrderState<List<Order>>> getAcceptedOrders() {
+        return Observable.create(emitter -> {
+            emitter.onNext(OrderState.loading());
+
+            foodApiService.getOrders(foodDao.getUser().getToken())
+                   .subscribe(new Observer<List<OrderNetworkEntity>>() {
+                       @Override
+                       public void onSubscribe(@NonNull Disposable d) {
+                       }
+
+                       @Override
+                       public void onNext(@NonNull List<OrderNetworkEntity> orderNetworkEntities) {
+                           List<OrderNetworkEntity> orderNetworkEntityList = new ArrayList<>();
+
+                           for(OrderNetworkEntity o: orderNetworkEntities) {
+                               if (o.isIsAccepted()){
+                                   orderNetworkEntityList.add(o);
+                               }
+                           }
+
+                           emitter.onNext(OrderState.success(orderNetworkMapper.mapFromEntityList(orderNetworkEntityList)));
+                       }
+
+                       @Override
+                       public void onError(@NonNull Throwable e) {
+                           Log.d(TAG, "e " + e.getMessage() + e);
+                            emitter.onNext(OrderState.error(e));
+                       }
+
+                       @Override
+                       public void onComplete() {
+                           emitter.onComplete();
+                       }
+                   });
+        });
+    }
+
+    public Observable<OrderState<String>> acceptOrder(String id) {
+        return Observable.create(emitter -> {
+            emitter.onNext(OrderState.loading());
+           foodApiService.acceptOrder(id)
+                   .subscribe(new Observer<String>() {
+                       @Override
+                       public void onSubscribe(@NonNull Disposable d) {
+                       }
+
+                       @Override
+                       public void onNext(@NonNull String s) {
+                            emitter.onNext(OrderState.success(s));
+                       }
+
+                       @Override
+                       public void onError(@NonNull Throwable e) {
+                            emitter.onNext(OrderState.error(e));
+                       }
+
+                       @Override
+                       public void onComplete() {
+
+                       }
+                   });
+        });
     }
 }

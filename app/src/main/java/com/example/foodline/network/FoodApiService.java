@@ -1,7 +1,10 @@
 package com.example.foodline.network;
 
+import android.util.Log;
+
 import com.example.foodline.network.fcm_token.FCMTokenNetworkEntity;
 import com.example.foodline.network.menu.MenuNetworkEntity;
+import com.example.foodline.network.order.OrderNetworkEntity;
 import com.example.foodline.network.user.UserNetworkEntity;
 
 import java.util.List;
@@ -16,6 +19,8 @@ public class FoodApiService {
 
     private final FoodApi api;
     private static FoodApiService INSTANCE;
+
+    private final String TAG = "FoodApiService";
 
     private FoodApiService(){
         api = new Retrofit.Builder()
@@ -49,5 +54,13 @@ public class FoodApiService {
 
     public Observable<FCMTokenNetworkEntity> sendToken(String authToken, String fcmToken, int userId) {
         return api.sendToken(authToken, fcmToken, userId);
+    }
+
+    public Observable<List<OrderNetworkEntity>> getOrders(String authToken){
+        return api.getOrders("Bearer " + authToken);
+    }
+
+    public Observable<String> acceptOrder(String orderId) {
+        return api.acceptOrder(orderId);
     }
 }
