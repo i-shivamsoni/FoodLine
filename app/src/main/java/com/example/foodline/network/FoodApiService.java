@@ -1,26 +1,28 @@
 package com.example.foodline.network;
 
-import com.example.foodline.model.DefaultResponse;
-import com.example.foodline.model.MenuItem;
+import com.example.foodline.model.Order;
+import com.example.foodline.network.menu.MenuNetworkEntity;
+import com.example.foodline.network.order.OrderNetworkEntity;
+import com.example.foodline.network.user.UserNetworkEntity;
 
 import java.util.List;
 
-import retrofit2.Call;
+import io.reactivex.rxjava3.core.Observable;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class FoodApiService {
     private static final String BASE_URL = "https://foodline-demo.herokuapp.com/";
 
-    private FoodApi api;
+    private final FoodApi api;
     private static FoodApiService INSTANCE;
 
     private FoodApiService(){
         api = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                 .build()
                 .create(FoodApi.class);
     }
@@ -34,15 +36,19 @@ public class FoodApiService {
         return INSTANCE;
     }
 
-    public Call<DefaultResponse> authenticateUser(String email, String password){
+    public Observable<UserNetworkEntity> authenticateUser(String email, String password){
         return api.login(email, password);
     }
 
-    public Call<DefaultResponse> registerUser(String name, String email, String password){
+    public Observable<UserNetworkEntity> registerUser(String name, String email, String password){
         return api.register(name, email, password);
     }
 
-    public Call<List<MenuItem>> getMenu(){
+    public Observable<List<MenuNetworkEntity>> getMenu(){
         return api.getMenu();
+    }
+
+    public Observable<OrderNetworkEntity> addOrder(String authToken, Order order) {
+        return api.addOrder("Bearer " + authToken, order);
     }
 }

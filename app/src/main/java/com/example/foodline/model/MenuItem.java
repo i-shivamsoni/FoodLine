@@ -1,129 +1,115 @@
 package com.example.foodline.model;
 
-import androidx.room.Entity;
-import androidx.room.Ignore;
-import androidx.room.PrimaryKey;
-
-import com.google.gson.annotations.SerializedName;
-
-@Entity(tableName = "menu_item_table")
 public class MenuItem {
+	private int id;
+	private String name;
+	private String price;
+	private String rating;
+	private String category;
+	private String imageUrl;
+	private String description;
+	private int counterInStock;
+	private int counterInCart;
 
-    @SerializedName("_id")
-    @PrimaryKey
-    private int id;
+	public MenuItem(int id, String name, String price, String rating, String category, String imageUrl, String description, int counterInStock, int counterInCart) {
+		this.id = id;
+		this.name = name;
+		this.price = price;
+		this.rating = rating;
+		this.category = category;
+		this.imageUrl = imageUrl;
+		this.description = description;
+		this.counterInStock = counterInStock;
+		this.counterInCart = counterInCart;
+	}
 
-    @SerializedName("dish_name")
-    private String name;
+	public MenuItem(){
+	}
 
-    private String category;
+	public int getId() {
+		return id;
+	}
 
-    @SerializedName("image")
-    private String imageUrl;
+	public void setId(int id) {
+		this.id = id;
+	}
 
-    private String rating;
+	public void setCounterInCart(int counterInCart){
+		this.counterInCart = counterInCart;
+	}
 
-    @SerializedName("numReviews")
-    private int numOfReviews;
+	public int getCounterInCart(){
+		return counterInCart;
+	}
 
-    private String price;
+	public void setPrice(String price){
+		this.price = price;
+	}
 
-    private int counterInStock;
+	public String getPrice(){
+		return price;
+	}
 
-    private int counterInCart;
+	public void setImageUrl(String imageUrl){
+		this.imageUrl = imageUrl;
+	}
 
-    public MenuItem(int id, String name, String category, String imageUrl, String rating, int numOfReviews, String price, int counterInStock) {
-        this.id = id;
-        this.name = name;
-        this.category = category;
-        this.imageUrl = imageUrl;
-        this.rating = rating;
-        this.numOfReviews = numOfReviews;
-        this.price = price;
-        this.counterInStock = counterInStock;
-        this.counterInCart = 0;
-    }
+	public String getImageUrl(){
+		return imageUrl;
+	}
 
-    public int getNumOfReviews() {
-        return numOfReviews;
-    }
+	public void setName(String name){
+		this.name = name;
+	}
 
-    public void setNumOfReviews(int numOfReviews) {
-        this.numOfReviews = numOfReviews;
-    }
+	public String getName(){
+		return name;
+	}
 
-    public String getRating() {
-        return rating;
-    }
+	public void setRating(String rating){
+		this.rating = rating;
+	}
 
-    public void setRating(String rating) {
-        this.rating = rating;
-    }
+	public String getRating(){
+		return rating;
+	}
 
-    public int getCounterInStock() {
-        return counterInStock;
-    }
+	public void setCategory(String category){
+		this.category = category;
+	}
 
-    public void setCounterInStock(int counterInStock) {
-        this.counterInStock = counterInStock;
-    }
+	public String getCategory(){
+		return category;
+	}
 
-    public int getId() {
-        return id;
-    }
+	public void setCounterInStock(int counterInStock){
+		this.counterInStock = counterInStock;
+	}
 
-    public void setId(int id) {
-        this.id = id;
-    }
+	public int getCounterInStock(){
+		return counterInStock;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getPrice() {
-        return price;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public int getCounterInCart() {
-        return counterInCart;
-    }
-
-    public void setCounterInCart(int counterInCart) {
-        this.counterInCart = counterInCart;
-    }
-
-    @Override
-    public String toString() {
-        return "MenuItem{" +
-                "name='" + name + '\'' +
-                ", category='" + category + '\'' +
-                ", price='" + price + '\'' +
-                ", imageUrl='" + imageUrl + '\'' +
-                ", inCart=" + counterInCart +
-                '}';
-    }
+	@Override
+	public String toString() {
+		return "Dish{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", price='" + price + '\'' +
+				", rating='" + rating + '\'' +
+				", category='" + category + '\'' +
+				", imageUrl='" + imageUrl + '\'' +
+				", description='" + description + '\'' +
+				", counterInStock=" + counterInStock +
+				", counterInCart=" + counterInCart +
+				'}';
+	}
 }
