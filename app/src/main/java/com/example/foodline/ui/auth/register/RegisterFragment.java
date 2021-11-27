@@ -147,6 +147,17 @@ public class RegisterFragment extends Fragment {
             }
         }
 
+        if(binding.nameText.getText().toString().isEmpty())
+        {
+            Toast.makeText(requireContext(), "Name is Empty please enter your name", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        else if(binding.nameText.getText().toString().matches(".*\\d.*"))
+        {
+            Toast.makeText(requireContext(), "Please enter a valid name", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
         return isEmailValid && isPasswordValid;
     }
 
